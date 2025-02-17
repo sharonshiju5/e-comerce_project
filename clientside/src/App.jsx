@@ -13,13 +13,15 @@ import PassChange from './components/user/userPasschainge'
 
 
 function App() {
+ const [useremail,setUseremail]=useState("")
+ console.log(`search ${useremail}`);
 
   return (
     <>
       <BrowserRouter>
         <Routes>
       {/* <Route element={<HomePage setID={setID}/>} /> */}
-          <Route path="/" Component={HomePage}/>
+          <Route path="/" element={<HomePage useremail={useremail}/>}/>
           <Route path="/admin" Component={AdminLogin}/>
           <Route path="/login" Component={Login}/>
           <Route path="/forget" Component={Forgot}/>
