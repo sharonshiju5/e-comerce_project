@@ -3,12 +3,12 @@ import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
 const transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+    host: "smtp.gmail.com",
+    port: 587 ,
     secure: false, // true for port 465, false for other ports
     auth: {
-        user: "78c63a5635b05d",
-        pass: "26927f0fcbce04",
+        user: "contacte169@gmail.com",
+        pass: "ajviyfwmigdwdzxq",
     },
 });
 
@@ -80,16 +80,28 @@ export async function forgetPassword(req,res) {
     console.log(req.body);
     
     try {
-            // send mail with defined transport object
-            const email=req.body.email
-            const info = await transporter.sendMail({
-            from: 'gihoso2129@owlny.com', // sender address
-            to: email, // list of receivers
-            subject: "verify", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<a href='http://localhost:5173/chaingepass  '><button>verify</button></a>", // html body
+           // send mail with defined transport object
+           const email=req.body.email
+           const info = await transporter.sendMail({
+           from: 'contacte169@gmail.com', // sender address
+           to: email, // list of receivers
+           subject: "verify", // Subject line
+           text: "Hello world?", // plain text body
+           html: `<div style="padding: 20px; text-align: center;">
+               <h2>Reset Your Password</h2>
+               <p>Click the button below to reset your password:</p>
+               <a href="http://localhost:5173/userchaingepass" 
+                  style="background-color: #4CAF50; 
+                         color: white; 
+                         padding: 14px 20px; 
+                         text-decoration: none; 
+                         border-radius: 4px;
+                         display: inline-block;
+                         margin: 10px 0;">
+                   Reset Password
+               </a>
+           </div>`, 
           });
-        
           console.log("Message sent: %s", info.messageId);
     } catch (error) {
         console.log(error);
@@ -100,9 +112,11 @@ export async function forgetPassword(req,res) {
 
 export async function chaingePassword(req,res) {
     try {
-        const {email,password,cpassword}=req.body
-        if (!email|| !password|| !cpassword) {
-            return res.status(400).json({ msg: "Fields are empty" });
+      
+      const {email,password,cpassword,otp}=req.body
+      if (!email|| !password|| !cpassword) {
+        console.log(otp+"admin");
+        return res.status(400).json({ msg: "Fields are empty" });
         }
         if (password !== cpassword) {
             return res.status(400).json({ msg: "Passwords do not match" });

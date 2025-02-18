@@ -4,12 +4,12 @@ import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
 
 const transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+    host: "smtp.gmail.com",
+    port: 587 ,
     secure: false, // true for port 465, false for other ports
     auth: {
-        user: "78c63a5635b05d",
-        pass: "26927f0fcbce04",
+        user: "contacte169@gmail.com",
+        pass: "ajviyfwmigdwdzxq",
     },
 });
 
@@ -17,9 +17,12 @@ const {sign} = pkg;
 
 
 export async function adduser(req,res) {
-    const{fname,lname,email,account,phone,password,cpassword}=req.body
-    // if(!(fname&&phone&&lname&&email&&account&&password&&cpassword))
-    //     return res.status(404).send({msg:"feilds are empty"});
+    // const randomNumber = generateSixDigitNumber();
+    const{fname,lname,email,account,phone,password,cpassword,otp}=req.body
+    if(!(fname&&phone&&lname&&email&&account&&password&&cpassword))
+        return res.status(404).send({msg:"feilds are empty"});
+    // if(otp!=randomNumber)
+    //     return res.status(404).send({msg:"otp is incorect"});
     if(password!=cpassword)
         return res.status(404).send({msg:"password not match"});
     const data=await userSchema.findOne({email})
@@ -67,19 +70,35 @@ export async function logine(req,res){
       }
 }
 
-
+// function generateSixDigitNumber() {
+//     return Math.floor(100000 + Math.random() * 900000);
+// }
 export async function forgetPassword(req,res) {
     console.log(req.body);
     
     try {
+        // const randomNumber = generateSixDigitNumber();
             // send mail with defined transport object
             const email=req.body.email
             const info = await transporter.sendMail({
-            from: 'gihoso2129@owlny.com', // sender address
+            from: 'contacte169@gmail.com', // sender address
             to: email, // list of receivers
             subject: "verify", // Subject line
             text: "Hello world?", // plain text body
-            html: "<a href='http://localhost:5173/userchaingepass  '><button>verify</button></a>", // html body
+            html: `<div style="padding: 20px; text-align: center;">
+                <h2>Reset Your Password</h2>
+                <p>Click the button below to reset your password:</p>
+                <a href="http://localhost:5173/userchaingepass" 
+                   style="background-color: #4CAF50; 
+                          color: white; 
+                          padding: 14px 20px; 
+                          text-decoration: none; 
+                          border-radius: 4px;
+                          display: inline-block;
+                          margin: 10px 0;">
+                    Reset Password
+                </a>
+            </div>`, 
           });
         
           console.log("Message sent: %s", info.messageId);
