@@ -6,9 +6,9 @@ import { Menu,Store ,Filter , X, Search, ShoppingCart, User, LogOut, Settings, H
 
 
 
-export default function HomePage({useremail}) {
+export default function Profile() {
+    console.log("user profile");
     const[input,setInput]=useState(true)
-    const[filter,setFilter]=useState(true)
     const [price, setPrice] = useState(100); // Initial price value
 
     const [isOpen, setIsOpen] = useState(false);
@@ -38,15 +38,12 @@ export default function HomePage({useremail}) {
         setShowProfileMenu(false);
       }
     };
-    function showfilter() {
-      setFilter(!filter)
-    }
 
-// console.log(price);
+
 
     return(
         <>
- <nav className="bg-white shadow-sm">
+            <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
         {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-16">
@@ -199,52 +196,10 @@ export default function HomePage({useremail}) {
           </div>
         )}
       </div>
-      <div className="subnav">
-        <div className="nav-filter-div">
-          <button onClick={showfilter} className="p-2 duration-200">
-           <Filter className="filter-icon  h-5 w-5 text-gray-600" />
-          </button>
-        </div>
-        <p>Get additional 10% off* on your first purchase. Use Code VHGET10.</p>
-        <div className="nav-filter-div">
-        </div>
-      </div>
+     
     </nav>
-    {
-      filter?"":
-      <div className="filter-div animate-slideInleft">
-        <div className="filter-category">
-        <span>choose category</span>
-          <select name="brand" id="">brand
-            <option value="">fashion</option>
-            <option value="">electronic</option>
-            <option value="">grocery</option>
-            <option value="">shoes</option>
-            <option value="">acceseres</option>
-          </select>
-        </div>
-        <div className="filter-brand">
-          <span>choose brand</span>
-          <select name="brand" id="">brand
-            <option value="">nike</option>
-            <option value="">puma</option>
-            <option value="">adidads</option>
-            <option value="">zara</option>
-            <option value="">mhr</option>
-          </select>
-        </div>
-        <div className="filter-price">
-          <h3 className="font-medium">Price Range</h3>
-          <span>{price}00 rupes</span>
-          <input type="range"
-          name="price"
-          value={price} // Bind input value to state
-          onChange={(e) => setPrice(e.target.value)}           className="w-full" />
-       </div>
-    </div>
-    }
-    <div className="container">
-      
+    <div className="profile-container">
+        
     </div>
         </>
     )

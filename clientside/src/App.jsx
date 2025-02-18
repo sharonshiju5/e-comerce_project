@@ -9,6 +9,7 @@ import Forgot from './components/admin/forget'
 import Forgotuser from './components/user/user.forget'
 import PasswordChange from './components/admin/chaingepass'
 import PassChange from './components/user/userPasschainge'
+import Profile from './components/user/userProfile'
 
 
 
@@ -20,15 +21,21 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+      {/* user */}
+
       {/* <Route element={<HomePage setID={setID}/>} /> */}
           <Route path="/" element={<HomePage useremail={useremail}/>}/>
-          <Route path="/admin" Component={AdminLogin}/>
           <Route path="/login" Component={Login}/>
-          <Route path="/forget" Component={Forgot}/>
           <Route path="/forgetuser" Component={Forgotuser}/>
-          <Route path="/register" Component={Register}/>
-          <Route path="/chaingepass" Component={PasswordChange}/>
           <Route path="/userchaingepass" Component={PassChange}/>
+          <Route path="/register" Component={Register}/>
+          <Route path="/userprofile" Component={Profile}/>
+
+
+      {/* admin */}
+          <Route path="/admin" Component={AdminLogin}/>
+          <Route path="/forget" Component={Forgot}/>
+          <Route path="/chaingepass" Component={PasswordChange}/>
 
         </Routes>
       </BrowserRouter>

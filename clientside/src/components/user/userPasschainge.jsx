@@ -13,7 +13,8 @@ const userchaingepass = () => {
   const [formData, setFormData] = useState({
     email:"",
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    otp:""
   });
   const [errorMsg, setErrorMsg] = useState("");
   const [disable, setDisable] = useState(true);
@@ -137,6 +138,18 @@ const userchaingepass = () => {
                           name='email'
                           onChange={setForm}
                           placeholder="Email Address"
+                          className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
+        
+                          required
+                        />
+                      </div>
+                      <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
+                        <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 `} size={18} />
+                        <input
+                          type="number"
+                          name='otp'
+                          onChange={setForm}
+                          placeholder="enter otp"
                           className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
         
                           required

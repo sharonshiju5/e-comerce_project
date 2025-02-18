@@ -80,6 +80,14 @@ select{
     /* z-index: 10000000000000;
     background-color: black; */
 }
+.profile-container{
+    width: 100%;
+    /* margin: auto; */
+    height: 100vh;
+    background-color: chocolate;
+}
+
+
 
 
 /* animations */
