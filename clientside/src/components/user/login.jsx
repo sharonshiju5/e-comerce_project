@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ArrowRight, Mail, Lock,  } from 'lucide-react';
 import { Link,useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+
 import APIURL from "../path.js"
 import axios from 'axios';
 const Login = () => {
@@ -27,11 +29,38 @@ try {
   console.log(res.data.msg);
   
   if (res.status==200) {
+    const { token, msg,email } = res.data;
+    console.log(res.data);
+    toast.success(msg, {
+      position: "top-center",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+    localStorage.setItem("token",token)
+    localStorage.setItem("email",email)
+    console.log(token,msg);
     console.log("user login succes");
-    navigate("/")
+    setTimeout(() => {
+      navigate("/")
+    }, 1500);
   }
   
 } catch (error) {
+  toast.error(error.response.data.msg, {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    });
   console.log(error);
   
 } 
@@ -44,7 +73,7 @@ try {
           <h2 className="text-2xl font-bold text-gray-700 mb-1">Login to you'r account</h2>
           <p className="text-gray-500 text-sm">Join our community today</p>
         </div>
-
+        <ToastContainer/>
         <form onSubmit={handleSubmit} className="space-y-4">
          
           {/* Personal Information Section */}

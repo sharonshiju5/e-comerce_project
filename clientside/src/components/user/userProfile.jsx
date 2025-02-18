@@ -1,15 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {  Package,  MapPin, Plus, Edit2 } from "lucide-react";
 import "../css/index.css"
 import { Link,useNavigate } from "react-router-dom";
 import { Menu,Store ,Filter , X, Search, ShoppingCart, User, LogOut, Settings, Heart,  } from 'lucide-react';
+import axios from "axios";
+import APIURL from "../path";
 
 
 const ProfilePage = () => {
+  const email=localStorage.getItem("email")
+  const [formData, setFormData] = useState({
+    fname: '',
+    lname: '',
+    account: '',
+    email: email,
+    phone: '',
+    password: '',
+    cPassword: ''
+  });
   const [activeTab, setActiveTab] = useState("profile");
+  const [fetched, setFetched] = useState(false);
+  const [user, setUser] = useState({});
+
+  useEffect(()=>{
+
+    const profile =async (e) => {
+      try {
+        console.log("hb");
+        const res = await axios.post(APIURL+"/profiledata", formData);
+        const{user}=res.data
+        setUser(user[0])
+        console.log(user[0].fname);
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+    if (!fetched) {
+      profile();
+    }
+  }, [fetched]);
+console.log(user);
 
   const userData = {
-    name: "John Doe",
+    name: `"John Doe"`,
     email: "john.doe@example.com",
     phone: "+1 234 567 8900",
     address: "123 Main St, City, Country",
@@ -18,7 +52,7 @@ const ProfilePage = () => {
 
   const[input,setInput]=useState(true)
   const[filter,setFilter]=useState(true)
-  const [price, setPrice] = useState(100); // Initial price value
+  const [price, setPrice] = useState(100);
 
   const [isOpen, setIsOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -47,10 +81,12 @@ const ProfilePage = () => {
       setShowProfileMenu(false);
     }
   };
+
   function showfilter() {
     setFilter(!filter)
   }
 
+  
   return (
     <>
     <nav className="bg-white shadow-sm">
@@ -224,8 +260,8 @@ const ProfilePage = () => {
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-16 h-16 bg-gray-300 rounded-full"></div>
           <div>
-            <h2 className="text-xl font-semibold">{userData.name}</h2>
-            <p className="text-sm text-gray-500">{userData.email}</p>
+            <h2 className="text-xl font-semibold">{formData.fname}</h2>
+            <p className="text-sm text-gray-500">{email}</p>
           </div>
         </div>
         <button className={`p-3 rounded-md flex items-center space-x-2 ${activeTab === "profile" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("profile")}>
@@ -259,9 +295,39 @@ const ProfilePage = () => {
               </button>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <p><strong>Name:</strong> {userData.name}</p>
-              <p><strong>Email:</strong> {userData.email}</p>
-              <p><strong>Phone:</strong> {userData.phone}</p>
+                
+              <p>
+                <strong>first Name: </strong>
+                <input type="text"
+                  disabled
+                  name="fname"
+                  onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
+                  value={user?.fname || ""} />
+              </p>
+              <p>
+                <strong>last name: </strong>
+                <input type="text"
+                  disabled
+                  name="lname"
+                  onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
+                  value={user?.lname || ""} />  
+              </p>
+              <p>
+                <strong>Email: </strong>
+                <input type="text"
+                disabled
+                name="email"
+                onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
+                value={user?.email || ""} /> 
+              </p>
+              <p>
+                <strong>Phone: </strong>
+                <input type="text"
+                disabled
+                name="phone"
+                onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
+                value={user?.phone || ""} />
+              </p>
               <p><strong>Address:</strong> {userData.address}</p>
             </div>
           </section>

@@ -9,6 +9,7 @@ router.route("/adduser").post(rh.adduser)
 router.route("/login").post(rh.logine)
 router.route("/forgetuser").post(rh.forgetPassword)
 router.route("/chaingeuser").put(rh.chaingePassword)
+router.route("/profiledata").post(rh.profile)
 
 
 // adminn Section

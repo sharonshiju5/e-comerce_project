@@ -62,7 +62,7 @@ export async function logine(req,res){
         const token= await sign({userID:user._id},process.env.JWT_KEY,
           {expiresIn:"24h"})
     
-        return res.status(200).json({ msg: "Successfully logged in", token });
+        return res.status(200).json({ msg: "Successfully logged in", token,email });
     
       } catch (error) {
         console.error("Login Error:", error);
@@ -134,3 +134,20 @@ export async function chaingePassword(req,res) {
     }
 }
 
+
+
+export async function profile(req,res) {
+    try {
+        // console.log(res);
+        const {email}=req.body
+        console.log(email);
+        const user = await userSchema.find({email});
+        console.log(user);
+        return res.status(200).json({ msg: "Successfully logged in",user });
+        
+            
+    } catch (error) {
+        console.log(error);
+
+    }
+}
