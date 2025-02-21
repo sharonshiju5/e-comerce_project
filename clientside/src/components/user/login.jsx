@@ -21,6 +21,8 @@ const Login = () => {
   const submit = (e) => {
     
   }
+
+  
   const handleSubmit = async(e) => {
     e.preventDefault();
     console.log(formData);
@@ -29,8 +31,10 @@ try {
   console.log(res.data.msg);
   
   if (res.status==200) {
-    const { token, msg,email } = res.data;
+    const { token, msg,email,userId } = res.data;
     console.log(res.data);
+    console.log(userId);
+    
     toast.success(msg, {
       position: "top-center",
       autoClose: 1500,
@@ -43,6 +47,7 @@ try {
       });
     localStorage.setItem("token",token)
     localStorage.setItem("email",email)
+    localStorage.setItem("userId",userId)
     console.log(token,msg);
     console.log("user login succes");
     setTimeout(() => {
@@ -67,13 +72,13 @@ try {
  };
 
   return (
+    <>
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-orange-50">
       <div className="w-full max-w-md p-6 m-4 bg-white rounded-2xl shadow-lg transform hover:scale-[1.01] transition-all duration-300">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-gray-700 mb-1">Login to you'r account</h2>
           <p className="text-gray-500 text-sm">Join our community today</p>
         </div>
-        <ToastContainer/>
         <form onSubmit={handleSubmit} className="space-y-4">
          
           {/* Personal Information Section */}
@@ -98,7 +103,7 @@ try {
                   onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
                   className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
                   required
-                />
+                  />
               </div>
 
             </div>
@@ -117,7 +122,7 @@ try {
                   onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
                   className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
                   required
-                />
+                  />
 
               </div>
             </div>
@@ -127,7 +132,7 @@ try {
             type="submit"
             onClick={submit}
             className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 transform hover:translate-y-[-2px] transition-all duration-200 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 active:scale-95"
-          >
+            >
             login Account
             <ArrowRight size={18} />
           </button>
@@ -144,7 +149,10 @@ try {
           </Link>
         </p>
       </div>
+
+  <ToastContainer/>
     </div>
+  </>
   );
 };
 

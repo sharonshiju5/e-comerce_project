@@ -1,18 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 body{
-    background-color: aqua;
+    /* background-color: aqua; */
 }
 *{
     font-family: "Montserrat", serif;
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
-    color: rgb(23, 23, 24);
+    /* color: rgb(23, 23, 24); */
     text-transform: capitalize;
 }
 nav{
     position: fixed;
     width: 100%;
+}
+nav *{
+    color: black;
+
 }
 .hidden{
     /* background-color: aqua; */
@@ -47,6 +51,13 @@ nav{
 .container{
     width: 100%;
     height: 100vh;
+    background-color: aqua;
+}
+.sect{
+    height: 90vh;
+    /* background-color: aqua; */
+    overflow-x: scroll;
+    scrollbar-width: thin;
 }
 .filter-div{
     padding: 15px;
@@ -94,11 +105,34 @@ select{
 }
 .main-container{
     height: 100vh;
-    padding-top: 90px;
+    padding-top: 50px;
 }
-
-
-
+.addres-div{
+    height: 70vh;
+    width: 60%;
+    padding: 20px;
+margin-bottom: 100px;
+}
+.addres-div form{
+    height: 100%;
+    /* background-color: fuchsia; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.addres-div input,select,textarea{
+    width: 47%;
+    /* background-color: aqua; */
+    height: 60px;
+    border:  1px solid grey;
+    border-radius: 3px;
+    padding-left: 15px;
+}
+.address-btn{
+    width: 20%;
+    height: 40px;
+    border-radius: 5px;
+}
 
 /* animations */
 /* animations */

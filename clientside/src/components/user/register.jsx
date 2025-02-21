@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Mail, Lock, User, Phone, Store, ShoppingCart } from 'lucide-react';
+import { ArrowRight, Mail, Eye, EyeOff, Lock, User, Phone, Store, ShoppingCart } from 'lucide-react';
 import { Link,useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import APIURL from '../path';
@@ -212,7 +212,7 @@ const RegisterPage = () => {
             <h3 className="text-sm font-semibold text-gray-600 mb-3">Security</h3>
             <div className="space-y-3">
               <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
-                <Lock onClick={showpass} className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 `} size={18} />
+                <Lock  className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 `} size={18} />
                 <input
                   type= {pass?"password":"text"}
                   placeholder="Password"
@@ -221,6 +221,11 @@ const RegisterPage = () => {
                   className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
                   required
                 />
+                <button
+          type="button"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+          onClick={showpass}
+            > {pass?<Eye size={20} className="text-gray-500" />:<EyeOff size={20} className="text-gray-500" />}</button>
                 <div className="mt-1 flex gap-1">
                   {[...Array(6)].map((_, i) => (
                     <div
@@ -236,7 +241,7 @@ const RegisterPage = () => {
               <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
               {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
-                <Lock onClick={showpass} className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 `} size={18} />
+                <Lock  className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 `} size={18} />
                 <input
                   type= {pass?"password":"text"}
                   placeholder="Confirm Password"
@@ -245,6 +250,11 @@ const RegisterPage = () => {
                   className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
                   required
                 />
+                <button
+          type="button"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+          onClick={showpass}
+            > {pass?<Eye size={20} className="text-gray-500" />:<EyeOff size={20} className="text-gray-500" />}</button>
               </div>
             </div>
           </div>
