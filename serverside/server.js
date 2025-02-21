@@ -5,7 +5,6 @@ import env from "dotenv"
 import router from "./router.js";
 
 
-
 env.config()
 
 const app=express();

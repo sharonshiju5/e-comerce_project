@@ -7,6 +7,7 @@ const userSchema=new mongoose.Schema({
     email:{type:String,require:true},
     account:{type:String,require:true},
     password:{type:String,require:true},
+    sellerId: { type: String, unique: true, sparse: true },
     })
 export default mongoose.model.user||mongoose.model("user",userSchema)
     

@@ -10,6 +10,14 @@ router.route("/login").post(rh.logine)
 router.route("/forgetuser").post(rh.forgetPassword)
 router.route("/chaingeuser").put(rh.chaingePassword)
 router.route("/profiledata").post(rh.profile)
+router.route("/saveprofile").put(rh.saveprofile)
+
+// address
+// address
+// address
+router.route("/addaddress").post(rh.addaddress)
+router.route("/showaddress").post(rh.showaddress)
+router.route("/deleteaddress").post(rh.deleteaddress)
 
 
 // adminn Section
