@@ -12,9 +12,42 @@ const RegisterPage = () => {
     account: 'buyer',
     email: '',
     phone: '',
+    company:'',
+    licence:'',
     password: '',
     cPassword: ''
   });
+
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const base64 = await convertBase64(file);
+        setFormData((prev) => ({ ...prev, licence: base64 }));
+        console.log("Base64 String:", base64); 
+      } catch (error) {
+        console.error("Error converting file to Base64:", error);
+      }
+    }
+  };
+
   const [errorMsg, setErrorMsg] = useState("");
   const [disable, setDisable] = useState(true);
 
@@ -204,9 +237,66 @@ const RegisterPage = () => {
                   required
                 />
               </div>
+              {formData.account === "buyer" ? "" : (
+                <>
+                  {/* Company Phone Number input */}
+                  <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02] mb-6">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200"
+                    >
+                      <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                      <line x1="12" y1="6" x2="12" y2="6.01"></line>
+                      <line x1="12" y1="12" x2="12" y2="12.01"></line>
+                      <line x1="12" y1="18" x2="12" y2="18.01"></line>
+                    </svg>
+                    <input
+                      type="tel"
+                      name="company"
+                      onChange={setForm}
+                      placeholder="company name"
+                      className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
+                      required
+                    />
+                  </div>
+                            
+                  {/* Company License section */}
+                  <div className="mb-6">
+                    <div className="text-sm font-medium text-gray-700 mb-2 ml-1">Company License</div>
+                    <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
+                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="12" y1="18" x2="12" y2="12"></line>
+                          <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                      </div>
+                      <input
+                        type="file"
+                        name="licence"
+                        onChange={handleFileChange}
+                        className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30 cursor-pointer"
+                        required
+                      />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-orange-100 text-orange-600 px-2 py-1 rounded text-xs font-medium">
+                        Choose File
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-
+          
           {/* Password Section */}
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-gray-600 mb-3">Security</h3>

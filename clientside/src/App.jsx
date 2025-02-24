@@ -10,6 +10,7 @@ import Forgotuser from './components/user/user.forget'
 import PasswordChange from './components/admin/chaingepass'
 import PassChange from './components/user/userPasschainge'
 import Profile from './components/user/userProfile'
+import ProductDetail from './components/productpage/viewproduct'
 
 
 
@@ -30,7 +31,9 @@ function App() {
           <Route path="/userchaingepass" Component={PassChange}/>
           <Route path="/register" Component={Register}/>
           <Route path="/userprofile" Component={Profile}/>
-
+      
+      {/* product */}
+          <Route path="/productview" Component={ProductDetail}/>
 
       {/* admin */}
           <Route path="/admin" Component={AdminLogin}/>

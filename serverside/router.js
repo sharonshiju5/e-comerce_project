@@ -19,6 +19,16 @@ router.route("/addaddress").post(rh.addaddress)
 router.route("/showaddress").post(rh.showaddress)
 router.route("/deleteaddress").post(rh.deleteaddress)
 
+//product section
+//product section
+//product section
+router.route("/addproduct").post(rh.addProduct)
+router.route("/fetchproduct").post(rh.fetchProduct)
+router.route("/deleteproduct").post(rh.deleteproduct)
+router.route("/showproduct").post(rh.showproduct)
+router.route("/updateproduct").post(rh.updateproduct)
+
+
 
 // adminn Section
 // adminn Section

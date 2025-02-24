@@ -6,10 +6,8 @@ import { data, Link,useNavigate } from "react-router-dom";
 import { Menu,Store ,Filter ,Eye, EyeOff , X, Search, ShoppingCart, User, LogOut, Settings, Heart,  } from 'lucide-react';
 import axios from "axios";
 import APIURL from "../path";
-import ProductInformationForm from "../productpage/prodInfo"
-import ProductDetailInfo from "../productpage/product2";
-import ProductCategorySelection from "../productpage/productnew2";
-import ProductVariantCreation from "../productpage/product3";
+import ProductForm from "../productpage/addproduct";
+import SellerProducts from "../productpage/productview";
 
 const ProfilePage = () => {
   const [edit, setEdit] = useState(false);
@@ -32,7 +30,6 @@ const ProfilePage = () => {
     land: '',
     altrenativ: '',
   });
-  console.log(addresformData);
   
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
@@ -51,12 +48,13 @@ const ProfilePage = () => {
 
     const profile =async (e) => {
       try {
-        console.log("hb");
+ 
         const res = await axios.post(APIURL+"/profiledata", formData);
         const{user}=res.data
         setUser(user[0])
         setFetched(true); 
         // console.log(user[0].fname);
+
       } catch (error) {
         console.log(error);
         
@@ -98,6 +96,7 @@ const ProfilePage = () => {
     { name: 'My Profile', icon: User, link: 'userprofile' },
     { name: 'Settings', icon: Settings , link: 'settings'},
     { name: 'Wishlist', icon: Heart , link: 'wishlist'},
+    { name: 'addproduct', icon: Heart , link: 'addproduct'},
   ];
 
   // Close dropdown when clicking outside
@@ -131,10 +130,10 @@ const ProfilePage = () => {
   async function saveform(){
      console.log("Saving Data:", formData);
      setUser((prevUser) => ({ ...prevUser, ...formData,}));
-     console.log(formData);
+    //  console.log(formData);
      try {
        const res = await axios.put(APIURL+"/saveprofile", formData);
-       console.log(res+"response");
+      //  console.log(res+"response");
        
      } catch (error) {
        console.log(error);
@@ -150,14 +149,14 @@ const ProfilePage = () => {
   const saveaddress = async (e) => {
     e.preventDefault();
     
-    console.log("Sending data to API:", addresformData); 
+    // console.log("Sending data to API:", addresformData); 
 
     try {
         const res = await axios.post(APIURL + "/addaddress", addresformData, {
             headers: { "Content-Type": "application/json" }
         });
 
-        console.log("Response:", res.data);
+        // console.log("Response:", res.data);
         // if (res.data.address) {
           // setAddresses(res.data.address); 
           if (res.status==201) {
@@ -194,7 +193,7 @@ const [addresses, setAddresses] = useState([]);
 const showaddress = async () => {
   try {
       const res = await axios.post(APIURL + "/showaddress", addresformData);
-      console.log("Full API Response:", res.data); 
+      // console.log("Full API Response:", res.data); 
     const{msg}=res.data
       if (res.data.address && Array.isArray(res.data.address)) {
           setAddresses(res.data.address); 
@@ -440,9 +439,14 @@ const deleteAddress = async (_id) => {
             user && user.account === "buyer" ? (
               ""
             ) : (
+              <>
         <button className={`p-3 rounded-md flex items-center space-x-2 ${activeTab === "addProduct" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("addProduct")}>
            <span>view Products</span>
         </button>
+
+        <button className={`p-3 rounded-md flex items-center space-x-2 ${activeTab === "addproduct" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("addproduct")}>
+           <span>add Products</span>
+        </button></>
        ) }
         <button className="mt-auto p-3 rounded-md flex items-center space-x-2 text-red-600 hover:bg-red-100">
           <LogOut /> <span>Logout</span>
@@ -632,13 +636,6 @@ const deleteAddress = async (_id) => {
 
                     <div className="mt-3 flex justify-end gap-2">
 
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-1 px-3 rounded transition duration-300 flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                      </svg>
-                      Edit
-                    </button>
-
                     <button onClick={() => {
                       const addressId = address._id;
                       console.log("Address ID to delete:", addressId);
@@ -659,18 +656,19 @@ const deleteAddress = async (_id) => {
         
         {activeTab === "addProduct" && (
           <section className="bg-white p-6 ">
-            <button><Plus /></button>
-            <h2 className="text-lg font-semibold">Add New Product</h2>
+            <h2 className="text-lg font-semibold">Products</h2>
             <p>Form goes here</p>
             <div className="bg-white p-6 w-full max-h-135 overflow-y-auto rounded-lg border border-gray-200 shadow-md">
-
-            <ProductInformationForm/>
-            <ProductDetailInfo/>
-            <ProductCategorySelection/>
-            <ProductVariantCreation/>
+              <SellerProducts/>
             </div>
           </section>
         )}
+        {activeTab === "addproduct" && (
+          <div className="bg-white p-6 w-full max-h-162 overflow-y-auto rounded-lg border border-gray-200 shadow-md">
+
+            <ProductForm/>
+          </div>
+          )}
       </main>
 
         <ToastContainer/>

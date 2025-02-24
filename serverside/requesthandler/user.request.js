@@ -1,9 +1,9 @@
 import userSchema from "../models/user.models.js"
 import addresSchema from "../models/addres.model.js"
+import productSchema from "../models/product.model.js"
 import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
-
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -20,31 +20,29 @@ const {sign} = pkg;
 
 export async function adduser(req, res) {
     try {
-        const { fname, lname, email, account, phone, password, cpassword, otp } = req.body;
-    
-        // Checking the inputs 
+        const { fname, lname, email, account, phone, password, cpassword, licence,company} = req.body;
+        console.log(licence);
+        
         if (!(fname && lname && email && account && phone && password && cpassword)) {
             return res.status(400).send({ msg: "Fields are empty" });
         }
     
-        // Check if passwords match
         if (password !== cpassword) {
             return res.status(400).send({ msg: "Passwords do not match" });
         }
     
-        // Check if email already exists
+ 
         const existingUser = await userSchema.findOne({ email });
         if (existingUser) {
             return res.status(409).send({ msg: "Email already exists" }); // 409 for conflict
         }
 
-        // Hashing password
+
         const hashedPassword = await bcrypt.hash(password, 10);
         console.log(hashedPassword);
 
         let sellerId = null;
         
-        // If account type is seller, generate seller ID
         if (account === "seller") {
             let isUnique = false;
             while (!isUnique) {
@@ -55,7 +53,7 @@ export async function adduser(req, res) {
         }
     
         // Create the user
-        await userSchema.create({ fname, lname, email, account, phone, password: hashedPassword, sellerId });
+        await userSchema.create({ fname, lname, email, account, phone, password: hashedPassword, sellerId ,licence,company});
     
         return res.status(201).send({ msg: "Successfully created", sellerId });
     
@@ -140,6 +138,7 @@ export async function forgetPassword(req,res) {
     
 }
 
+
 export async function chaingePassword(req,res) {
     try {
 
@@ -176,6 +175,11 @@ export async function chaingePassword(req,res) {
     }
 }
 
+
+// profile section
+// profile section
+// profile section
+// profile section
 
 
 export async function profile(req,res) {
@@ -278,5 +282,102 @@ export async function deleteaddress(req,res) {
     } catch (error) {
         console.log(error);
         res.status(500).send({ error });
+    }
+}
+
+
+//product section
+//product section
+//product section
+
+
+export async function addProduct(req, res) {
+    try {
+
+        const { userId, name, brand, category, price, stock, sizes, images, material, description } = req.body;
+
+        if (!userId) {
+            return res.status(400).send({ msg: "User ID is required" });
+        }
+
+        const user = await userSchema.findById(userId);
+        if (!user || !user.sellerId) {
+            return res.status(404).send({ msg: "Seller ID not found for this user" });
+        }
+        const sellerId = user.sellerId; 
+
+
+        if (!Array.isArray(images) || images.length === 0 || images.some(img => typeof img !== "string" || !img.trim())) {
+            return res.status(400).send({ msg: "Invalid images field. Must be an array of image URLs." });
+        }
+
+        const newProduct = await productSchema.create({
+            name,
+            brand,
+            category,
+            price,
+            stock,
+            sizes,
+            images,
+            material,
+            description,
+            sellerId,
+        });
+
+        console.log("New Product Created:", newProduct); 
+
+        return res.status(201).send({ msg: "Product successfully added", productId: newProduct._id });
+    
+    } catch (error) {
+        console.error("Error in addProduct:", error);
+        res.status(500).send({ msg: "Internal Server Error", error: error.message });
+    }
+}
+
+
+export async function fetchProduct(req,res) {
+    try {
+        const{userId}=req.body
+        const user = await userSchema.findById(userId);
+        const sellerId = user.sellerId; 
+        const products = await productSchema.find({ sellerId });
+        return res.status(200).send({ msg: "Products fetched successfully", products });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ msg: "Internal Server Error", error: error.message });
+    }
+}
+
+export async function deleteproduct(req,res) {
+    try {
+        const{productId}=req.body
+        const product = await productSchema.findOneAndDelete({productId}); 
+        // console.log(product);
+        return res.status(201).send({ msg: "Successfully deleted", });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error });
+    }
+}
+
+export async function showproduct(req,res) {
+    try {
+        const Data = await productSchema.find(); 
+        return res.status(200).send({ msg: "Successfully fetched",Data})
+        
+    } catch (error) {
+        
+    }
+}
+export async function updateproduct(req,res) {
+    try {
+        const { productid, name, brand, category, price, stock, sizes, images, material, description } = req.body;
+        console.log(productid);
+        const user = await productSchema.findOneAndUpdate({_id:productid},{name, brand, category, price, stock, sizes, images, material, description });
+        return res.status(200).json({ msg: "Successfully updated in",user });
+        
+    } catch (error) {
+        console.log(error);
     }
 }
