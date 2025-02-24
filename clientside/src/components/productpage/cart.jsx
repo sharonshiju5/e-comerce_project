@@ -24,6 +24,7 @@ const CartPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+
       {/* Top Bar */}
       {/* <div className="bg-black text-white text-center py-2 text-sm relative">
         <p>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! <span className="font-semibold">ShopNow</span></p>
@@ -247,7 +248,7 @@ const CartPage = () => {
           </div>
 
           <div className="border-t border-gray-700 mt-12 pt-6 text-center text-sm text-gray-400">
-            <p>© Copyright Rimel 2022. All right reserved</p>
+            {/* <p>© Copyright Rimel 2022. All right reserved */}
           </div>
         </div>
       </footer>
