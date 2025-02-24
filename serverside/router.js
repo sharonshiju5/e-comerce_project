@@ -29,6 +29,7 @@ router.route("/deleteproduct").post(rh.deleteproduct)
 router.route("/showproduct").post(rh.showproduct)
 router.route("/updateproduct").post(rh.updateproduct)
 router.route("/addoffer").post(rh.addoffer)
+router.route("/showsingleproduct").post(rh.showsingleproduct)
 
 
 // adminn Section

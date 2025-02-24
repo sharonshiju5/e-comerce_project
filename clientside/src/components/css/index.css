@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 body{
-    background-color: rgb(254, 255, 243);
+    background-color: rgba(254, 255, 243, 0.673);
 }
 *{
     font-family: "Montserrat", serif;
@@ -19,6 +19,7 @@ nav *{
     color: black;
 
 }
+
 .hidden{
     /* background-color: aqua; */
     /* width: 40%; */
@@ -187,4 +188,20 @@ margin-bottom: 100px;
   background: rgba(0, 0, 0, 0.8) !important; /* More visible */
   width: 8px !important;
   height: 8px !important;
+}
+/* .container div{
+    animation: appear 5s linear;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+} */
+
+@keyframes appear{
+    from{
+        opacity: 0;
+        scale: 0.4;
+    }
+    to{
+        opacity: 1;
+        scale: 1;
+    }
 }

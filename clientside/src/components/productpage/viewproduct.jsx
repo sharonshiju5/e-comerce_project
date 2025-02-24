@@ -1,63 +1,37 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import APIURL from '../path';
 
 const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [singleprod,setsingleprod]=useState({})
 
-  const images = [
-    '/api/placeholder/500/500',
-    '/api/placeholder/500/500',
-    '/api/placeholder/500/500',
-    '/api/placeholder/500/500'
-  ];
-
-  const relatedProducts = [
-    {
-      id: 1,
-      name: 'HAVIT HV-G92 Gamepad',
-      price: 120,
-      oldPrice: 160,
-      discount: '-40%',
-      rating: 4.8,
-      reviews: 88,
-      image: '/api/placeholder/200/200'
-    },
-    {
-      id: 2,
-      name: 'AK-900 Wired Keyboard',
-      price: 960,
-      oldPrice: 1160,
-      discount: '-25%',
-      rating: 4.7,
-      reviews: 75,
-      image: '/api/placeholder/200/200'
-    },
-    {
-      id: 3,
-      name: 'IPS LCD Gaming Monitor',
-      price: 370,
-      oldPrice: 400,
-      discount: '-30%',
-      rating: 4.9,
-      reviews: 99,
-      image: '/api/placeholder/200/200'
-    },
-    {
-      id: 4,
-      name: 'RGB liquid CPU Cooler',
-      price: 160,
-      oldPrice: 170,
-      rating: 4.8,
-      reviews: 65,
-      image: '/api/placeholder/200/200'
+  const { _id } = useParams();
+  useEffect(()=>{
+  async function showsingleproduct(e) {
+    // e.prevenntdefault()
+    try {
+      // console.log(_id);
+      const res = await axios.post(APIURL + "/showsingleproduct",{_id} );
+      const {singleprod}=res.data
+      // console.log(singleprod);
+      setsingleprod(singleprod)
+    } catch (error) {
+      console.log(error);
     }
-  ];
+  }
+  showsingleproduct()
+  },[_id])
+
+  // console.log(singleprod);
 
   return (
     <div className="max-w-7xl mx-auto px-4">
       {/* Top Banner */}
       <div className="bg-black text-white text-center py-2 -mx-4">
-        <p>Summer Sale For All Swim Suits And Free Express Delivery - Off 50%! 
+        <p>Summer Sale And Free Express Delivery - Off 50%! 
           <span className="ml-2 underline cursor-pointer">ShopNow</span>
         </p>
       </div>
@@ -85,11 +59,11 @@ const ProductDetail = () => {
 
       {/* Breadcrumb */}
       <div className="flex gap-2 text-gray-500 my-4">
-        <span>Account</span>
+        <span>Home</span>
         <span>/</span>
-        <span>Gaming</span>
+        <span>{singleprod.category}</span>
         <span>/</span>
-        <span className="text-black">Havic HV G-92 Gamepad</span>
+        <span className="text-black">{singleprod.name}</span>
       </div>
 
       {/* Product Section */}
@@ -97,55 +71,76 @@ const ProductDetail = () => {
         {/* Image Gallery */}
         <div className="flex gap-4">
           <div className="flex flex-col gap-4">
-            {images.map((img, idx) => (
-              <div 
-                key={idx}
-                className={`w-20 h-20 border rounded cursor-pointer ${selectedImage === idx ? 'border-red-500' : ''}`}
-                onClick={() => setSelectedImage(idx)}
-              >
-                <img src={img} alt={`Product view ${idx + 1}`} className="w-full h-full object-cover" />
-              </div>
-            ))}
+          {singleprod?.images?.length > 0 ? (
+          singleprod.images.map((img, idx) => (
+            <div 
+              key={idx}
+              className={`w-20 h-20 border rounded cursor-pointer ${selectedImage === idx ? 'border-red-500' : ''}`}
+              onClick={() => setSelectedImage(idx)}
+            >
+              <img src={img} alt={`Product view ${idx + 1}`} className="w-full h-full object-cover" />
+            </div>
+          ))
+          ) : (
+            <p>No images available</p>
+          )}
+
           </div>
           <div className="flex-1">
-            <img src={images[selectedImage]} alt="Main product view" className="w-full rounded-lg" />
+            {singleprod?.images?.length > 0 && selectedImage !== null ? (
+              <img 
+                src={singleprod.images[selectedImage]} 
+                alt="Main product view" 
+                className="w-full rounded-lg" 
+              />
+            ) : (
+              <p>No main image available</p>
+            )}
           </div>
+
         </div>
 
         {/* Product Info */}
         <div>
-          <h1 className="text-2xl font-semibold mb-2">Havic HV G-92 Gamepad</h1>
+          <h1 className="text-2xl font-semibold mb-2">{singleprod.name}</h1>
           <div className="flex items-center gap-2 mb-4">
             <div className="flex text-yellow-400">{'★'.repeat(4)}{'☆'.repeat(1)}</div>
-            <span className="text-gray-500">(150 Reviews)</span>
-            <span className="text-green-500">| In Stock</span>
+            <span className="text-gray-500">({singleprod.reviews||"0"})</span>
+            <span className="text-green-500">{
+              singleprod.quantity==0?"out of stock":
+              "| In Stock:"}
+              </span>
           </div>
-          <div className="text-2xl font-semibold mb-4">$192.00</div>
+          <div className="text-2xl font-semibold mb-4">{singleprod.price}</div>
           <p className="text-gray-600 mb-6">
-            PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install & mess free removal Pressure sensitive.
+          {singleprod.description}
           </p>
 
           {/* Colors */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h3 className="font-semibold mb-2">Colours:</h3>
             <div className="flex gap-2">
               <button className="w-8 h-8 rounded-full bg-gray-200"></button>
               <button className="w-8 h-8 rounded-full bg-red-400"></button>
             </div>
-          </div>
+          </div> */}
 
           {/* Size */}
           <div className="mb-6">
             <h3 className="font-semibold mb-2">Size:</h3>
             <div className="flex gap-2">
-              {['XS', 'S', 'M', 'L', 'XL'].map(size => (
-                <button
-                  key={size}
-                  className={`px-4 py-2 border rounded ${size === 'M' ? 'bg-red-500 text-white' : ''}`}
-                >
-                  {size}
-                </button>
-              ))}
+            {singleprod?.sizes?.length > 0 ? (
+                singleprod.sizes.map((size) => (
+                  <button
+                    key={size}
+                    className={`px-4 py-2 border rounded ${size === 'M' ? 'bg-red-500 text-white' : ''}`}
+                  >
+                    {size}   
+                  </button>
+                ))
+              ) : (
+                <p>No sizes available</p>
+              )}
             </div>
           </div>
 
@@ -195,7 +190,7 @@ const ProductDetail = () => {
       </div>
 
       {/* Related Items */}
-      <div className="my-12">
+      {/* <div className="my-12">
         <h2 className="text-red-500 font-semibold mb-6">Related Item</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {relatedProducts.map(product => (
@@ -228,7 +223,7 @@ const ProductDetail = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

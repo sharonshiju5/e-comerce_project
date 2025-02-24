@@ -11,6 +11,7 @@ import PasswordChange from './components/admin/chaingepass'
 import PassChange from './components/user/userPasschainge'
 import Profile from './components/user/userProfile'
 import ProductDetail from './components/productpage/viewproduct'
+import CartPage from './components/productpage/cart'
 
 
 
@@ -33,7 +34,8 @@ function App() {
           <Route path="/userprofile" Component={Profile}/>
       
       {/* product */}
-          <Route path="/productview" Component={ProductDetail}/>
+          <Route path="/productview/:_id" Component={ProductDetail}/>
+          <Route path="/cart" Component={CartPage}/>
 
       {/* admin */}
           <Route path="/admin" Component={AdminLogin}/>

@@ -433,3 +433,16 @@ export async function addoffer(req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+
+export async function showsingleproduct(req,res) {
+    try {
+        const{_id}=req.body
+        console.log(_id);
+        const singleprod = await productSchema.findById(_id);
+        console.log(singleprod);
+         res.status(200).send({msg:"succesfully fetched single product",singleprod})
+    } catch (error) {  
+        console.log(error);
+    
+    }
+}

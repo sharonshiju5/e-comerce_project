@@ -17,7 +17,7 @@ import APIURL from "../path";
 
 export default function HomePage({useremail}) {
   
-
+  const navigate=useNavigate()
   const flashSales = [
     { id: 1, name: 'PS4 Controller', price: 29.99, originalPrice: 49.99, image: '/api/placeholder/200/200', rating: 4.5 },
     { id: 2, name: 'RGB Gaming Keyboard', price: 59.99, originalPrice: 89.99, image: '/api/placeholder/200/200', rating: 4.8 },
@@ -107,6 +107,10 @@ useEffect(() => {
 showProducts();
 
 }, []);
+
+  function viewProdct(_id) {
+    navigate(`/productview/${_id}`)
+  }
 
     return(
         <>
@@ -359,12 +363,19 @@ showProducts();
             </div>
              <Swiper
                 modules={[Navigation, Pagination]}
-                navigation
+                  navigation={{
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
                 pagination={{ clickable: true }}
                 className="w-[220px] rounded-lg h-[270px] "
               >
                 {item.images.map((image, index) => (
-                  <SwiperSlide key={index} className="flex  justify-center w-[300px] items-center">
+                  <SwiperSlide key={index} onClick={() => {
+                    const prodId = item._id;
+                    console.log("Address ID to delete:", prodId);
+                    viewProdct(prodId);
+                }} className="flex  justify-center w-[300px] items-center">
                     {/* Wrapper div to enforce consistent sizing */}
                     {/* <div className="w-[300px] h-[200px] flex justify-center items-center overflow-hidden"> */}
                       <img
