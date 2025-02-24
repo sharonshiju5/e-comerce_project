@@ -4,11 +4,12 @@ import { Link,useNavigate } from "react-router-dom";
 import { Menu,Store ,Filter , X, Search, ShoppingCart, User, LogOut, Settings, Heart,  } from 'lucide-react';
 
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -301,8 +302,8 @@ showProducts();
           <span>{price}00 rupes</span>
           <input type="range"
           name="price"
-          value={price} // Bind input value to state
-          onChange={(e) => setPrice(e.target.value)}           className="w-full" />
+          value={price} 
+          onChange={(e) => setPrice(e.target.value)} className="w-full" />
        </div>
     </div>
     }
@@ -314,7 +315,7 @@ showProducts();
       {/* Apple Banner */}
       <div className="bg-black text-white rounded-lg overflow-hidden mb-8">
         <div className="relative">
-          <img src="/api/placeholder/1200/300" alt="Apple Products" className="w-full h-48 object-cover" />
+          <img src="https://static.nike.com/a/images/f_auto/dpr_1.3,cs_srgb/h_1719,c_limit/2f8b228a-5141-4e2c-b846-d6e028faaed3/nike-just-do-it.jpg" alt="Apple Products" className="w-full h-58 object-cover" />
           <div className="absolute top-1/2 left-8 transform -translate-y-1/2">
             <h2 className="text-2xl font-bold mb-2">Up to 10% off Voucher</h2>
             <button className="text-sm underline">Shop Now →</button>
@@ -325,7 +326,7 @@ showProducts();
       {/* Flash Sales */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Flash Sales</h2>
+          <h2 className="text-xl font-bold">Flash Sales up to 60% off</h2>
           <div className="flex gap-2">
             <div className="bg-gray-100 px-3 py-1 rounded">03</div>
             <div className="bg-gray-100 px-3 py-1 rounded">23</div>
@@ -333,35 +334,71 @@ showProducts();
             <div className="bg-gray-100 px-3 py-1 rounded">56</div>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 overflow-x-scroll">
-          {products.map(item => (
-            <div 
-              key={products._id}
-              className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300"
-            >  <Swiper
-            modules={[Navigation, Pagination]}
-            navigation
-            pagination={{ clickable: true }}
-            className="w-full h-40 rounded-lg"
-          >
-            {item.images.map((image, index) => (
-              <SwiperSlide key={index}>
-                <img 
-                  src={image} 
-                  alt={item.name} 
-                  className="w-full h-40 object-cover rounded-lg mb-3" 
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div className="relative w-full">
+      {/* Carousel Container */}
+      <div className="flex items-center">
+        {/* Left Navigation Button */}
+        <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+          <ChevronLeft size={20} />
+        </button>
+
+        {/* Scrollable Product List */}
+        <div className="flex gap-4 overflow-x-auto custom-scrollbar whitespace-nowrap min-h-65 px-12">
+        {products
+          .filter(item => item.offer === 60)
+          .map(item => (
+            <div
+              key={item._id}
+              className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300 min-w-[250px]  relative"
+            >{item.offer==0?"":
+              <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs px-2 py-0.5 rounded-sm">
+            - {item.offer}%
+            </div>}
+            <div className="absolute right-[15px] top-3 z-30">
+              <Heart className="w-5 h-5 text-gray-600 cursor-pointer" strokeWidth={1.5} />
+            </div>
+             <Swiper
+                modules={[Navigation, Pagination]}
+                navigation
+                pagination={{ clickable: true }}
+                className="w-[220px] rounded-lg h-[270px] "
+              >
+                {item.images.map((image, index) => (
+                  <SwiperSlide key={index} className="flex  justify-center w-[300px] items-center">
+                    {/* Wrapper div to enforce consistent sizing */}
+                    {/* <div className="w-[300px] h-[200px] flex justify-center items-center overflow-hidden"> */}
+                      <img
+                        src={image}
+                        alt={item.name}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    {/* </div> */}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+
               <h3 className="font-medium">{item.name}</h3>
+              <div className="text-[10px] text-gray-600">
+              {item.description}
+              </div>
+              
               <div className="flex items-center gap-2">
-                <span className="text-red-500">${item.price}</span>
-                <span className="text-gray-400 line-through text-sm">${item.originalPrice}</span>
+                <span className="text-red-500">₹{item.price}</span>
+                <span className="text-gray-400 line-through text-sm">
+                ₹{(item.price / (1 - 0.60)).toFixed(2)}
+                </span>
               </div>
             </div>
+            
           ))}
         </div>
+
+        {/* Right Navigation Button */}
+        <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+          <ChevronRight size={20} />
+        </button>
+      </div>
+    </div>
       </div>
 
       {/* Categories */}
@@ -383,26 +420,74 @@ showProducts();
       {/* Best Selling Products */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Best Selling Products</h2>
+          <h2 className="text-xl font-bold">Best Selling Products in shirts</h2>
           <button className="text-red-500">View All</button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {bestSelling.map(item => (
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"> */}
+        <div className="relative w-full">
+      {/* Carousel Container */}
+      <div className="flex items-center">
+        {/* Left Navigation Button */}
+        <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+          <ChevronLeft size={20} />
+        </button>
+
+        {/* Scrollable Product List */}
+        <div className="flex gap-4 overflow-x-auto custom-scrollbar whitespace-nowrap min-h-65 px-12">
+
+        {products
+          .filter(item => item.category == "shirts")
+          .map(item => (
+            
             <div
-              key={item.id}
-              className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300"
+            key={item._id}
+            className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300 min-w-[250px]  relative"
+          >{item.offer==0?"":
+            <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs px-2 py-0.5 rounded-sm">
+          {item.offer}
+          </div>}
+          <div className="absolute right-[15px] top-3 z-30">
+            <Heart className="w-5 h-5 text-gray-600 cursor-pointer" strokeWidth={1.5} />
+          </div>
+           <Swiper
+              modules={[Navigation, Pagination]}
+              navigation
+              pagination={{ clickable: true }}
+              className="w-[220px] rounded-lg h-[270px] "
             >
-              <img src={item.image} alt={item.name} className="w-full h-40 object-cover rounded-lg mb-3" />
-              <h3 className="font-medium">{item.name}</h3>
-              <div className="flex items-center gap-2">
-                <span className="text-red-500">${item.price}</span>
-                <div className="flex text-yellow-400">
-                  {'★'.repeat(Math.floor(item.rating))}
-                  {'☆'.repeat(5 - Math.floor(item.rating))}
-                </div>
-              </div>
+              {item.images.map((image, index) => (
+                <SwiperSlide key={index} className="flex  justify-center w-[300px] items-center">
+                  {/* Wrapper div to enforce consistent sizing */}
+                  {/* <div className="w-[300px] h-[200px] flex justify-center items-center overflow-hidden"> */}
+                    <img
+                      src={image}
+                      alt={item.name}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  {/* </div> */}
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            <h3 className="font-medium">{item.name}</h3>
+            <div className="text-[10px] text-gray-600">
+            {item.description}
             </div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-red-500">₹{item.price}</span>
+              <span className="text-gray-400 line-through text-sm">
+              ₹{(item.price / (1 - 0.60)).toFixed(2)}
+              </span>
+            </div>
+          </div>
           ))}
+                  </div>
+
+          <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+            <ChevronRight size={20} />
+          </button>
+          </div>
         </div>
       </div>
 

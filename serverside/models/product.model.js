@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema({
     material: { type: String, required: true },
     description: { type: String, required: true },
     sellerId: { type: String, required: true },
+    offer:{type:Number},
     reviews: [{ user_id: mongoose.Schema.Types.ObjectId, rating: Number, comment: String }],
 
 });

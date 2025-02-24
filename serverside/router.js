@@ -22,12 +22,13 @@ router.route("/deleteaddress").post(rh.deleteaddress)
 //product section
 //product section
 //product section
+
 router.route("/addproduct").post(rh.addProduct)
 router.route("/fetchproduct").post(rh.fetchProduct)
 router.route("/deleteproduct").post(rh.deleteproduct)
 router.route("/showproduct").post(rh.showproduct)
 router.route("/updateproduct").post(rh.updateproduct)
-
+router.route("/addoffer").post(rh.addoffer)
 
 
 // adminn Section

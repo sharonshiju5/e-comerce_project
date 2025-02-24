@@ -3,6 +3,7 @@ import axios from "axios";
 import APIURL from "../path";
 import { ToastContainer, toast } from 'react-toastify';
 import Editproduct from "./editproduct";
+import { Tag } from 'lucide-react';
 
 const SellerProducts = () => {
     const [products, setProducts] = useState([]);
@@ -68,8 +69,29 @@ const SellerProducts = () => {
         setProductid(prodId)
         setShow(false)
     }
+    
+    async function addoffer(_id,offer) {
+        try {
+            const res = await axios.post(APIURL + "/addoffer",{_id,offer} )
+            const{msg}=res.data
+            if (res.status==200) {
+                toast.success(msg, {
+                  position: "top-right",
+                  autoClose: 700,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
-        <div className="p-6">
+        <div className="p-2">
             <h2 className="text-xl font-semibold mb-4">Your Products</h2>
 
             {/* {loading && <p>Loading products...</p>} */}
@@ -87,8 +109,49 @@ const SellerProducts = () => {
                             className="w-full h-40 object-cover rounded-md"
                         />
                         <h3 className="font-bold mt-2">{product.name}</h3>
+                        <p className="text-gray-600">{product.offer}% off</p>
                         <p className="text-gray-600">${product.price}</p>
                         <p className="text-sm text-gray-500">Stock: {product.stock}</p>
+                        <div className="flex gap-4">
+                          <h3 className="text-gray-700 font-medium text-sm my-auto">Add Offers</h3>
+                                                    
+                          <div className="grid grid-cols-2 gap-2">
+                            <button onClick={() => {
+                                    const prodId = product;
+                                    console.log("Address ID to delete:", prodId);
+                                    addoffer(prodId,15);
+                                }}  className="group relative bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs py-0.5 px-2 rounded transition-all duration-300 flex items-center gap-1 shadow-sm hover:shadow-md h-6 whitespace-nowrap">
+                              <Tag size={13} className="inline-block" />
+                              <span>15% OFF</span>
+                            </button>
+                                                    
+                            <button onClick={() => {
+                                    const prodId = product;
+                                    console.log("Address ID to delete:", prodId);
+                                    addoffer(prodId,30);
+                                }} className="group relative bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs py-0.5 px-2 rounded transition-all duration-300 flex items-center gap-1 shadow-sm hover:shadow-md h-6 whitespace-nowrap">
+                              <Tag size={13} className="inline-block" />
+                              <span>30% OFF</span>
+                            </button>
+                                                    
+                            <button onClick={() => {
+                                    const prodId = product;
+                                    console.log("Address ID to delete:", prodId);
+                                    addoffer(prodId,60);
+                                }} className="group relative bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs py-0.5 px-2 rounded transition-all duration-300 flex items-center gap-1 shadow-sm hover:shadow-md h-6 whitespace-nowrap">
+                              <Tag size={13} className="inline-block" />
+                              <span>60% OFF</span>
+                            </button>
+                                                    
+                            <button onClick={() => {
+                                    const prodId = product;
+                                    console.log("Address ID to delete:", prodId);
+                                    addoffer(prodId,0);
+                                }} className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium text-xs py-0.5 px-2 rounded transition-all duration-300 flex items-center gap-1 shadow-sm hover:shadow-md h-6 whitespace-nowrap">
+                              <span>Full Price</span>
+                            </button>
+                          </div>
+                        </div>
                         <div onClick={() => {
                                     const prodId = product;
                                     console.log("Address ID to delete:", prodId);

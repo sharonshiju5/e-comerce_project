@@ -4,6 +4,10 @@ import productSchema from "../models/product.model.js"
 import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
+import mongoose from "mongoose";
+
+
+
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -367,17 +371,65 @@ export async function showproduct(req,res) {
         return res.status(200).send({ msg: "Successfully fetched",Data})
         
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).send({ error });
     }
 }
-export async function updateproduct(req,res) {
+
+
+export async function updateproduct(req, res) {
     try {
         const { productid, name, brand, category, price, stock, sizes, images, material, description } = req.body;
-        console.log(productid);
-        const user = await productSchema.findOneAndUpdate({_id:productid},{name, brand, category, price, stock, sizes, images, material, description });
-        return res.status(200).json({ msg: "Successfully updated in",user });
+
+        console.log("Received product ID:", productid);
+
+        if (!productid || typeof productid !== "string") {
+            return res.status(400).json({ error: "Invalid Product ID: ID is missing or not a string" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(productid)) {
+            return res.status(400).json({ error: "Invalid Product ID format" });
+        }
+
+        const updatedProduct = await productSchema.findOneAndUpdate(
+            { _id: new mongoose.Types.ObjectId(productid) },{ name, brand, category, price, stock, sizes, images, material, description },
+
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        return res.status(200).json({ msg: "Product updated successfully", updatedProduct });
         
     } catch (error) {
-        console.log(error);
+        console.error("Error updating product:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export async function addoffer(req, res) {
+    try {
+        const { _id, offer } = req.body;
+
+        if (!_id || offer === undefined) {
+            return res.status(400).json({ error: "Product ID and offer are required" });
+        }
+
+        const updatedProduct = await productSchema.findOneAndUpdate(
+            { _id },
+            { $set: { offer: offer } },  // Use $set to explicitly update the field
+            { new: true, runValidators: true } // Ensures updated document is returned & validates schema
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        console.log("Updated Product:", updatedProduct);
+        res.status(200).json({ msg: "Offer updated successfully", updatedProduct });
+    } catch (error) {
+        console.error("Error updating offer:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 }

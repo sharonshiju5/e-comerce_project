@@ -18,9 +18,10 @@ const ProductForm = () => {
     description: "",
     userId:"",
   });
-  const [categories] = useState(["Beach Towels", "Bath Towels", "Tea Towels"]);
+  const [categories] = useState(["shoes", "shirts", "pants","trousers",""]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [customSize, setCustomSize] = useState("");
+  const [Customcategory, setCustomcategor] = useState("");
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleChange = (e) => {
@@ -53,6 +54,13 @@ const ProductForm = () => {
     setProduct(prev => ({...prev,sizes: [...prev.sizes, customSize] }));
     setCustomSize(""); 
   };
+
+  const addCustomcategory = () => {
+    if (!customSize.trim()) return; 
+    setProduct(prev => ({...prev,sizes: [...prev.sizes, customSize] }));
+    setCustomSize(""); 
+  };
+
 
 
   const addProducts = async (e) => {
