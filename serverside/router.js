@@ -30,6 +30,10 @@ router.route("/showproduct").post(rh.showproduct)
 router.route("/updateproduct").post(rh.updateproduct)
 router.route("/addoffer").post(rh.addoffer)
 router.route("/showsingleproduct").post(rh.showsingleproduct)
+router.route("/addtocart").post(rh.addtocart)
+router.route("/checkcart").post(rh.checkcart)
+router.route("/showcart").post(rh.showcart)
+router.route("/removecart").post(rh.removecart)
 
 
 // adminn Section

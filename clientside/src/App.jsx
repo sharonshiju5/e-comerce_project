@@ -12,6 +12,7 @@ import PassChange from './components/user/userPasschainge'
 import Profile from './components/user/userProfile'
 import ProductDetail from './components/productpage/viewproduct'
 import CartPage from './components/productpage/cart'
+import WishlistPage from './components/productpage/wishlist'
 
 
 
@@ -36,12 +37,13 @@ function App() {
       {/* product */}
           <Route path="/productview/:_id" Component={ProductDetail}/>
           <Route path="/cart" Component={CartPage}/>
+          <Route path="/wishlist" Component={WishlistPage}/>
 
       {/* admin */}
           <Route path="/admin" Component={AdminLogin}/>
           <Route path="/forget" Component={Forgot}/>
           <Route path="/chaingepass" Component={PasswordChange}/>
-
+          
         </Routes>
       </BrowserRouter>
     </>

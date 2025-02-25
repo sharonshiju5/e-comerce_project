@@ -2,7 +2,7 @@ import "../css/index.css"
 import { useEffect,useState } from 'react';
 import { Link,useNavigate } from "react-router-dom";
 import { Menu,Store ,Filter , X, Search, ShoppingCart, User, LogOut, Settings, Heart,  } from 'lucide-react';
-
+import puma from "../../assets/puma.png"
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -18,13 +18,7 @@ import APIURL from "../path";
 export default function HomePage({useremail}) {
   
   const navigate=useNavigate()
-  const flashSales = [
-    { id: 1, name: 'PS4 Controller', price: 29.99, originalPrice: 49.99, image: '/api/placeholder/200/200', rating: 4.5 },
-    { id: 2, name: 'RGB Gaming Keyboard', price: 59.99, originalPrice: 89.99, image: '/api/placeholder/200/200', rating: 4.8 },
-    { id: 3, name: 'Gaming Monitor', price: 199.99, originalPrice: 299.99, image: '/api/placeholder/200/200', rating: 4.7 },
-    { id: 4, name: 'Comfort Chair', price: 129.99, originalPrice: 159.99, image: '/api/placeholder/200/200', rating: 4.6 }
-  ];
-
+  const token=localStorage.getItem("token")
   const categories = [
     { id: 1, name: 'Phones', icon: '📱' },
     { id: 2, name: 'Computers', icon: '💻' },
@@ -34,23 +28,13 @@ export default function HomePage({useremail}) {
     { id: 6, name: 'Gaming', icon: '🎮' }
   ];
 
-  const bestSelling = [
-    { id: 1, name: 'Red Jacket', price: 89.99, image: '/api/placeholder/200/200', rating: 4.8 },
-    { id: 2, name: 'Brown Bag', price: 119.99, image: '/api/placeholder/200/200', rating: 4.7 },
-    { id: 3, name: 'RGB Cooler', price: 49.99, image: '/api/placeholder/200/200', rating: 4.9 },
-    { id: 4, name: 'Boots', price: 79.99, image: '/api/placeholder/200/200', rating: 4.6 }
-  ];
-
-
-
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
     const[input,setInput]=useState(true)
     const[filter,setFilter]=useState(true)
-    const [price, setPrice] = useState(100); // Initial price value
+    const [price, setPrice] = useState(100);
 
     const [isOpen, setIsOpen] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
@@ -92,7 +76,7 @@ useEffect(() => {
         const res = await axios.post(APIURL + "/showproduct");
         
         if (res.status === 200) { 
-            setProducts(res.data.Data || []); // ✅ Ensure Data exists
+            setProducts(res.data.Data || []); 
         }
 
         console.log("API Response:", res);
@@ -110,6 +94,12 @@ showProducts();
 
   function viewProdct(_id) {
     navigate(`/productview/${_id}`)
+  }
+
+  function logout() {
+    localStorage.removeItem("email")
+    localStorage.removeItem("token")
+    localStorage.removeItem("userId")
   }
 
     return(
@@ -156,6 +146,12 @@ showProducts();
 
           {/* Right Side Icons */}
           <div className="hidden md:flex items-center space-x-4">
+            {token?"":
+            <Link to={"/login"}>
+              <button type="button" class="px-3 py-2 text-xs font-medium text-center text-white rounded-lg focus:ring-1 focus:outline-none  text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500   font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900">Login</button>
+            </Link>
+
+          }
             <button 
               onClick={() => setShowSearch(!showSearch)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -176,7 +172,7 @@ showProducts();
               >
                 <User className="h-5 w-5 text-gray-600" />
               </button>
-              
+      
               {/* Dropdown Menu */}
               {showProfileMenu && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
@@ -195,7 +191,7 @@ showProducts();
                       href="#"
                       className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200`}>
                       <LogOut className="h-4 w-4 mr-3" />
-                      <span>LogOut</span>
+                      <span onClick={logout}>LogOut</span>
                     </a>
                 </div>
               )}
@@ -260,7 +256,7 @@ showProducts();
                 <a href="#"
                   className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200`}>
                   <LogOut className="h-4 w-4 mr-3" />
-                  <span>LogOut</span>
+                  <span onClick={logout}>LogOut</span>
                 </a>
               </div>
             </div>
@@ -503,10 +499,10 @@ showProducts();
       </div>
 
       {/* Music Experience Banner */}
-      <div className="bg-black text-white rounded-lg p-8 mb-8">
-        <div className="flex items-center justify-between">
+      <div className="bg-black text-white rounded-lg p-8 mb-8 footerimage">
+        <div className="flex items-center justify-between ">
           <div>
-            <h2 className="text-2xl font-bold mb-2">Enhance Your Music Experience</h2>
+            <h2 className="text-2xl font-bold mb-2">Enhance Your comfort</h2>
             <div className="flex gap-2 mb-4">
               <div className="w-8 h-8 bg-white rounded-full"></div>
               <div className="w-8 h-8 bg-white rounded-full"></div>
@@ -515,7 +511,7 @@ showProducts();
             </div>
             <button className="bg-green-500 text-white px-6 py-2 rounded-full">Shop Now</button>
           </div>
-          <img src="/api/placeholder/300/300" alt="Speaker" className="w-64 h-64 object-contain" />
+          <img src={puma} alt="Speaker" className="w-84 h-84 object-contain" />
         </div>
       </div>
 

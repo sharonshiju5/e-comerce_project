@@ -1,6 +1,7 @@
 import userSchema from "../models/user.models.js"
 import addresSchema from "../models/addres.model.js"
 import productSchema from "../models/product.model.js"
+import cartSchema from "../models/cart.model.js"
 import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
@@ -416,11 +417,7 @@ export async function addoffer(req, res) {
             return res.status(400).json({ error: "Product ID and offer are required" });
         }
 
-        const updatedProduct = await productSchema.findOneAndUpdate(
-            { _id },
-            { $set: { offer: offer } },  // Use $set to explicitly update the field
-            { new: true, runValidators: true } // Ensures updated document is returned & validates schema
-        );
+        const updatedProduct = await productSchema.findOneAndUpdate({ _id },{$set:{offer:offer}},{new:true,runValidators:true});
 
         if (!updatedProduct) {
             return res.status(404).json({ error: "Product not found" });
@@ -444,5 +441,83 @@ export async function showsingleproduct(req,res) {
     } catch (error) {  
         console.log(error);
     
+    }
+}
+
+export async function addtocart(req,res) {
+    try {
+        const{_id,user_id}=req.body
+        console.log(_id,user_id);
+     const cart=await cartSchema.create({
+            product_id:_id,
+            user_id:user_id
+        })
+        res.status(201).send({ msg: "succesfully added th item to cart" })
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+export async function checkcart(req,res) {
+    try {
+        const{_id,user_id}=req.body
+        const product_id=_id
+        console.log(product_id);
+        const cart = await cartSchema.findOne({ product_id, user_id });
+        console.log("Cart Item:", cart);       
+         console.log(cart);
+        if (cart) {
+            return res.status(201).send({ msg: true }); 
+        }
+        else{
+            return res.status(200).send({msg:false})
+        }
+    } catch (error) {
+        console.log(error+"error in checkcart");
+        return res.status(400).send(error)
+        
+    }
+}
+
+export async function showcart(req,res) {
+    try {
+        const { user_id } = req.body;
+        console.log("User ID:", user_id);
+
+        // Find all cart items for the user
+        const cartItems = await cartSchema.find({ user_id });
+        console.log("Cart Items:", cartItems);
+
+        if (!cartItems.length) {
+            return res.status(404).json({ message: "No products in cart" });
+        }
+
+        // Extract product IDs and convert them to ObjectId
+        const productIds = cartItems.map(item => new mongoose.Types.ObjectId(item.product_id));
+
+        // Fetch product details for all products in the cart
+        const products = await productSchema.find({ _id: { $in: productIds } });
+
+        console.log("Products in Cart:", products);
+        return res.status(200).json(products);
+
+    } catch (error) {
+        console.error("Error in showcart:", error);
+        return res.status(500).json({ error: "Server error" });
+    }
+}
+
+export async function removecart(req,res) {
+    try {
+        const{id}=req.body
+        console.log(id);
+        const product_id=id
+        const product = await cartSchema.findOneAndDelete({product_id}); 
+        return res.status(201).send({ msg: "Successfully deleted", });
+        
+    } catch (error) {
+        console.log(error);
+        
     }
 }

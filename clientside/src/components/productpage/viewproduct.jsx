@@ -1,12 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,Link } from 'react-router-dom';
 import APIURL from '../path';
 
 const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [singleprod,setsingleprod]=useState({})
+  const [cart,setcart]=useState()
 
   const { _id } = useParams();
   useEffect(()=>{
@@ -26,6 +27,47 @@ const ProductDetail = () => {
   },[_id])
 
   // console.log(singleprod);
+
+  
+  // useEffect(()=>{
+    async function checkcart() {
+      try {
+        console.log(_id);
+        const user_id=localStorage.getItem("userId")
+        const res=await axios.post(APIURL+"/checkcart",{_id,user_id})
+        console.log(res.data);
+        if (res.status==200) {
+          setcart(true)
+        }
+        else{
+          setcart(false)
+        }
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+    checkcart()
+  // },[_id])
+
+
+  async function addtocart(_id) {
+    try {
+      console.log(_id);
+      const user_id=localStorage.getItem("userId")
+      const res=await axios.post(APIURL+"/addtocart",{_id,user_id})
+      if (res.status==201) {
+          await checkcart();
+          // setcart(true);
+      }
+      console.log(res.data);
+
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4">
@@ -147,19 +189,27 @@ const ProductDetail = () => {
           {/* Quantity and Actions */}
           <div className="flex gap-4 items-center mb-6">
             <div className="flex items-center border rounded">
-              <button 
+              {/* <button 
                 className="px-4 py-2"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
               >
                 -
-              </button>
-              <span className="px-4">{quantity}</span>
-              <button 
-                className="px-4 py-2"
-                onClick={() => setQuantity(quantity + 1)}
+              </button> */}
+              {/* <span className="px-4">{quantity}</span> */}
+              {cart? <button 
+              className="px-4 py-2"
+              onClick={() => addtocart(singleprod._id)}
               >
-                +
+                add to cart
+              </button>:
+              <button 
+              className="px-4 py-2"
+              // onClick={() => addtocart(singleprod._id)}
+              ><Link to={"/cart"}>
+                go to cart
+              </Link>
               </button>
+              }
             </div>
             <button className="bg-red-500 text-white px-8 py-2 rounded">
               Buy Now

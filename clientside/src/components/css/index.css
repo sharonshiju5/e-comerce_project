@@ -189,6 +189,12 @@ margin-bottom: 100px;
   width: 8px !important;
   height: 8px !important;
 }
+.footerimage{
+    background-image: url("https://images.puma.com/image/upload/c_scale,f_auto,q_auto:good,w_1920/cms/images/101de710f43968ae991eb164ae7345a92162b50e?_a=BAMCkGfi0");
+}
+
+
+
 /* .container div{
     animation: appear 5s linear;
     animation-timeline: view();

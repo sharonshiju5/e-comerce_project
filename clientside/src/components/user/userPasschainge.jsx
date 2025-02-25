@@ -5,7 +5,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import APIURL from '../path';
 
-
 const userchaingepass = () => {
   console.log("user");
   
@@ -143,7 +142,7 @@ const userchaingepass = () => {
                           required
                         />
                       </div>
-                      <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
+                      {/* <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
                         <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 `} size={18} />
                         <input
                           type="number"
@@ -154,7 +153,7 @@ const userchaingepass = () => {
         
                           required
                         />
-                      </div>
+                      </div> */}
           {/* Password Section */}
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-gray-600 mb-3">Security</h3>
