@@ -224,7 +224,7 @@ const ProductDetail = () => {
             <div className="flex items-center gap-4 mb-4">
               <span className="text-2xl">🚚</span>
               <div>
-                <h3 className="font-semibold">Free Delivery</h3>
+                <h3 className="font-semibold">{singleprod.price>2000?"Free Delivery":"250 Delivery charge"}</h3>
                 <p className="text-gray-500">Enter your postal code for Delivery Availability</p>
               </div>
             </div>

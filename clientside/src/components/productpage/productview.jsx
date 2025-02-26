@@ -4,6 +4,7 @@ import APIURL from "../path";
 import { ToastContainer, toast } from 'react-toastify';
 import Editproduct from "./editproduct";
 import { Tag } from 'lucide-react';
+import sound from "../../assets/sound.mp3"
 
 const SellerProducts = () => {
     const [products, setProducts] = useState([]);
@@ -21,7 +22,7 @@ const SellerProducts = () => {
             setLoading(false);
             return;
         }
-        async function fetchproduct(params) {
+        async function fetchproduct() {
             try {
                 const res = await axios.post(APIURL + "/fetchproduct", {userId})
                 console.log(res);
@@ -42,8 +43,9 @@ const SellerProducts = () => {
             const{msg}=res.data
             console.log(res);
             console.log(msg);
-            
             if (res.status==201) {
+              const audio = new Audio(sound);
+              audio.play();
               toast.success(msg, {
                 position: "top-right",
                 autoClose: 1500,

@@ -18,7 +18,7 @@ const ProductForm = () => {
     description: "",
     userId:"",
   });
-  const [categories] = useState(["shoes", "shirts", "pants","trousers",""]);
+  const [categories] = useState(["shoes", "shirts", "pants","trousers","jeance","watch","jacket","skirt",]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [customSize, setCustomSize] = useState("");
   const [Customcategory, setCustomcategor] = useState("");

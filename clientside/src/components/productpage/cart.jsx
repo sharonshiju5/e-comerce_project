@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import APIURL from '../path';
 import { useParams,Link } from 'react-router-dom';
+import Navbar  from "../productpage/nav";
 
 const CartPage = () => {
   const [fullprice, setFullprice] = useState(0);
@@ -70,6 +71,7 @@ const CartPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Cart Content */}
+      <Navbar/>
       <div className="container mx-auto px-6 pb-16 flex-grow overflow-auto">
         {/* Cart Table */}
         <div className="overflow-x-auto max-w-full relative">          

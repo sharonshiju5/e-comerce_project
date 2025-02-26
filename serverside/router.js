@@ -34,7 +34,11 @@ router.route("/addtocart").post(rh.addtocart)
 router.route("/checkcart").post(rh.checkcart)
 router.route("/showcart").post(rh.showcart)
 router.route("/removecart").post(rh.removecart)
+router.route("/addtowishlist").post(rh.addtowishlist)
 
+
+router.route("/checkwishlist").post(rh.checkwishlist)
+router.route("/showwishlist").post(rh.showwishlist)
 
 // adminn Section
 // adminn Section
