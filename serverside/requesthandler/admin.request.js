@@ -1,4 +1,5 @@
 import adminSchema from "../models/admin.model.js"
+import userSchema from "../models/user.models.js"
 import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
@@ -66,7 +67,7 @@ export async function addminhome(req,res){
         }
     
         const token= await sign({userID:user._id},process.env.JWT_KEY,
-          {expiresIn:"24h"})
+          {expiresIn:"100h"})
     
         return res.status(200).json({ msg: "Successfully logged in", token });
     
@@ -90,7 +91,7 @@ export async function forgetPassword(req,res) {
            html: `<div style="padding: 20px; text-align: center;">
                <h2>Reset Your Password</h2>
                <p>Click the button below to reset your password:</p>
-               <a href="http://localhost:5173/userchaingepass" 
+               <a href="http://localhost:5173/chaingepass" 
                   style="background-color: #4CAF50; 
                          color: white; 
                          padding: 14px 20px; 
@@ -137,3 +138,13 @@ export async function chaingePassword(req,res) {
     }
 }
 
+
+export async function showusers(req,res) {
+  try {
+   const users=await userSchema.find()
+    res.status(200).send({msg:"users are",users})
+  } catch (error) {
+    console.log(error);
+    
+  }
+}

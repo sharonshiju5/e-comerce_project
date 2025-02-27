@@ -27,7 +27,7 @@ const {sign} = pkg;
 
 export async function adduser(req, res) {
     try {
-        const { fname, lname, email, account, phone, password, cpassword, licence,company} = req.body;
+        const { fname, lname, email, account, phone, password, cpassword, licence,company } = req.body;
         console.log(licence);
         
         if (!(fname && lname && email && account && phone && password && cpassword)) {
@@ -38,12 +38,10 @@ export async function adduser(req, res) {
             return res.status(400).send({ msg: "Passwords do not match" });
         }
     
- 
         const existingUser = await userSchema.findOne({ email });
         if (existingUser) {
             return res.status(409).send({ msg: "Email already exists" }); // 409 for conflict
         }
-
 
         const hashedPassword = await bcrypt.hash(password, 10);
         console.log(hashedPassword);
@@ -53,17 +51,28 @@ export async function adduser(req, res) {
         if (account === "seller") {
             let isUnique = false;
             while (!isUnique) {
-                sellerId = "SELLER-" + Math.floor(100000 + Math.random() * 900000); // Example: SELLER-654321
+                sellerId = "SELLER-" + Math.floor(100000 + Math.random() * 900000);
                 const existingSeller = await userSchema.findOne({ sellerId });
                 if (!existingSeller) isUnique = true;
             }
         }
-    
-        // Create the user
-        await userSchema.create({ fname, lname, email, account, phone, password: hashedPassword, sellerId ,licence,company});
-    
+
+        await userSchema.create({ 
+            fname, 
+            lname, 
+            email, 
+            account, 
+            phone, 
+            password: hashedPassword, 
+            sellerId, 
+            licence, 
+            company, 
+            joiningDate: new Date()
+        });
+
+
         return res.status(201).send({ msg: "Successfully created", sellerId });
-    
+
     } catch (error) {
         console.error("Error:", error);
         res.status(500).send({ msg: "Internal Server Error", error: error.message });
@@ -380,7 +389,7 @@ export async function showproduct(req,res) {
         if (sellerId) {
             console.log(sellerId+"seller");
             
-            const Data = await productSchema.find({ sellerId: { $ne: sellerId.sellerId } });
+            const Data = await productSchema.find({ sellerId: { $ne: sellerId.sellerId },block:false });
             return res.status(200).send({ msg: "Successfully fetched",Data})
         }
         else{

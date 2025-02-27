@@ -51,5 +51,6 @@ router.route("/admin").post(ad.adduser)
 router.route("/forget").post(ad.forgetPassword)
 router.route("/chainge").put(ad.chaingePassword)
 router.route("/adminhome").post(ad.addminhome)
+router.route("/showusers").get(ad.showusers)
 // router.route("/home").get(Auth,rh.Home)
 export default router
