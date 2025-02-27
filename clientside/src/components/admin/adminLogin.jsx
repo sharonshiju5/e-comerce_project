@@ -25,8 +25,10 @@ const AdminLogin = () => {
     try {
       const res = await axios.post(APIURL+"/adminhome", formData);
       if (res.status==200) {
+        const{token}= res.data
+        localStorage.setItem("admintoken",token)
         console.log("admin login succes");
-        navigate("/")
+        navigate("/adminpage")
       }
     } catch (error) {
       console.log(error);

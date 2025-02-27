@@ -13,6 +13,7 @@ import Profile from './components/user/userProfile'
 import ProductDetail from './components/productpage/viewproduct'
 import CartPage from './components/productpage/cart'
 import WishlistPage from './components/productpage/wishlist'
+import AdminPanel from './components/admin/adminPage'
 
 
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="/admin" Component={AdminLogin}/>
           <Route path="/forget" Component={Forgot}/>
           <Route path="/chaingepass" Component={PasswordChange}/>
+          <Route path="/adminpage" Component={AdminPanel}/>
           
         </Routes>
       </BrowserRouter>
