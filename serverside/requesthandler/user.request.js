@@ -370,8 +370,23 @@ export async function deleteproduct(req,res) {
 
 export async function showproduct(req,res) {
     try {
-        const Data = await productSchema.find(); 
-        return res.status(200).send({ msg: "Successfully fetched",Data})
+        const {user_id}=req.body
+        const _id=user_id
+        console.log(user_id+"id is");
+        
+        const sellerId=await userSchema.findById(_id)
+        if (sellerId) {
+            console.log(sellerId+"seller");
+            
+            const Data = await productSchema.find({ sellerId: { $ne: sellerId.sellerId } });
+            return res.status(200).send({ msg: "Successfully fetched",Data})
+        }
+        else{
+            const Data = await productSchema.find();
+            return res.status(200).send({ msg: "Successfully fetched",Data})
+
+        }
+
         
     } catch (error) {
         console.log(error);

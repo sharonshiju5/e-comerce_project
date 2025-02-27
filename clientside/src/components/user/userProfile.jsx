@@ -368,7 +368,7 @@ const deleteAddress = async (_id) => {
         )}
         {activeTab === "addresses" && (
           <section className="bg-whiteh-screen  p-6 rounded-md shadow-md">
-            <button onClick={shoaddres}><Plus /> </button> add a
+            <button onClick={shoaddres}><Plus /> </button> add address
             <h2 className="text-lg font-semibold">Saved Addresses</h2>
             {/* <button onClick={showaddress}>Show Address</button> */}
             {/* <p>No addresses saved</p> */}

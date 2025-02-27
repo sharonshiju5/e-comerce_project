@@ -72,8 +72,10 @@ export default function HomePage({useremail}) {
 useEffect(() => {
 
   async function showProducts() {
-    try {
-        const res = await axios.post(APIURL + "/showproduct");
+    try {      
+    const user_id=localStorage.getItem("userId")
+
+        const res = await axios.post(APIURL + "/showproduct",{user_id});
         
         if (res.status === 200) { 
             setProducts(res.data.Data || []); 
