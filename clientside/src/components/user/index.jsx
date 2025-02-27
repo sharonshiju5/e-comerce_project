@@ -1,7 +1,7 @@
 import "../css/index.css"
 import { useEffect,useState } from 'react';
 import { Link,useNavigate } from "react-router-dom";
-import { Menu,Store ,Filter , X, Search, ShoppingCart, User, LogOut, Settings, Heart,  } from 'lucide-react';
+import { Menu,Store ,Filter , X, Search, ShoppingCart, User, LogOut, Settings } from 'lucide-react';
 import puma from "../../assets/puma.png"
 import Navbar from "../productpage/nav"
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -46,7 +46,6 @@ export default function HomePage({useremail}) {
     const profileMenuItems = [
       { name: 'My Profile', icon: User, link: 'userprofile' },
       { name: 'Settings', icon: Settings , link: 'settings'},
-      { name: 'Wishlist', icon: Heart , link: 'wishlist'},
     ];
     
     // Close dropdown when clicking outside
@@ -67,75 +66,41 @@ export default function HomePage({useremail}) {
       { id: 6, name: 'shoes', icon: "https://cdn-icons-png.flaticon.com/128/1785/1785348.png" }
     ];
 
-// console.log(price);
-
+// Fetch products
 useEffect(() => {
-
-  async function showProducts() {
+  async function fetchData() {
     try {      
-    const user_id=localStorage.getItem("userId")
+      const user_id = localStorage.getItem("userId");
 
-        const res = await axios.post(APIURL + "/showproduct",{user_id});
-        
-        if (res.status === 200) { 
-            setProducts(res.data.Data || []); 
-        }
-
-        console.log("API Response:", res);
+      // Fetch products
+      const productsRes = await axios.post(APIURL + "/showproduct", {user_id});
       
+      if (productsRes.status === 200) { 
+        const productsData = productsRes.data.Data || [];
+        setProducts(productsData); 
+      }
     } catch (error) {
-        setError("Failed to load products.");
+      console.log("Error fetching data:", error);
+      setError("Failed to load products.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-}
+  }
 
-showProducts();
-
-}, []);
+  fetchData();
+}, [token]);
 
   function viewProdct(_id) {
     navigate(`/productview/${_id}`)
   }
 
-  function logout() {
-    localStorage.removeItem("email")
-    localStorage.removeItem("token")
-    localStorage.removeItem("userId")
-  }
-
-  
-  async function wishlist(product_id) {
-      if (token) {
-      try {
-        const user_id=localStorage.getItem("userId")
-        console.log(product_id);
-        const res=await axios.post(APIURL+"/addtowishlist",{product_id,user_id})
-        if (res.status==201) {      
-          
-        }
-        console.log(res.data);
-        
-      } catch (error) {
-        console.log(error);
-        
-      }
-    }
-    else{
-      alert("login to add product to wishlist")
-    }
-  }
-    return(
-        <>
-
+  return(
+    <>
     <Navbar/> 
     
     <div className="container">
-
-  
-
     <div className="max-w-7xl mx-auto px-4">
-      {/* Apple Banner */}
+      {/* Banner */}
       <div className="bg-black text-white rounded-lg overflow-hidden mb-8">
         <div className="relative">
           <img src="https://static.nike.com/a/images/f_auto/dpr_1.3,cs_srgb/h_1719,c_limit/2f8b228a-5141-4e2c-b846-d6e028faaed3/nike-just-do-it.jpg" alt="Apple Products" className="w-full h-58 object-cover" />
@@ -172,21 +137,16 @@ showProducts();
           .map(item => (
             <div
               key={item._id}
-              className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300 min-w-[250px]  relative"
-            >{item.offer==0?"":
-              <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs px-2 py-0.5 rounded-sm">
-            - {item.offer}%
-            </div>}
-            <div className="absolute right-[15px] top-3 z-30">
-              <Heart onClick={() => {
-                  const prodId = item._id;
-                  console.log("Address ID to delete:", prodId);
-                  wishlist(prodId);
-              }} className="w-5 h-5 text-gray-600 cursor-pointer" strokeWidth={1.5} />
-            </div>
+              className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300 min-w-[250px] relative"
+            >
+              {item.offer > 0 && (
+                <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs px-2 py-0.5 rounded-sm">
+                  - {item.offer}%
+                </div>
+              )}
              <Swiper
                 modules={[Navigation, Pagination]}
-                  navigation={{
+                navigation={{
                   nextEl: '.swiper-button-next',
                   prevEl: '.swiper-button-prev',
                 }}
@@ -195,18 +155,13 @@ showProducts();
               >
                 {item.images.map((image, index) => (
                   <SwiperSlide key={index} onClick={() => {
-                    const prodId = item._id;
-                    console.log("Address ID to delete:", prodId);
-                    viewProdct(prodId);
-                }} className="flex  justify-center w-[300px] items-center">
-                    {/* Wrapper div to enforce consistent sizing */}
-                    {/* <div className="w-[300px] h-[200px] flex justify-center items-center overflow-hidden"> */}
+                    viewProdct(item._id);
+                  }} className="flex justify-center w-[300px] items-center">
                       <img
                         src={image}
                         alt={item.name}
                         className="w-full h-full object-cover rounded-lg"
                       />
-                    {/* </div> */}
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -223,7 +178,6 @@ showProducts();
                 </span>
               </div>
             </div>
-            
           ))}
         </div>
 
@@ -242,10 +196,9 @@ showProducts();
           {categories.map(category => (
             <div
               key={category.id}
-              className="flex flex-col items-center justify-center p-4 border  rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
+              className="flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
             >
-              {/* <span className="text-2xl mb-2">{category.icon}</span> */}
-              <img  className="text-2xl mb-2 h-14"  src={category.icon} alt="" />
+              <img className="text-2xl mb-2 h-14" src={category.icon} alt="" />
               <span className="text-sm">{category.name}</span>
             </div>
           ))}
@@ -258,7 +211,6 @@ showProducts();
           <h2 className="text-xl font-bold">Best Selling Products in shirts</h2>
           <button className="text-red-500">View All</button>
         </div>
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"> */}
         <div className="relative w-full">
       {/* Carousel Container */}
       <div className="flex items-center">
@@ -271,72 +223,63 @@ showProducts();
         <div className="flex gap-4 overflow-x-auto custom-scrollbar whitespace-nowrap min-h-65 px-12">
 
         {products
-          .filter(item => item.category == "shirts")
+          .filter(item => item.category === "shirts")
           .map(item => (
-            
             <div
-            key={item._id}
-            className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300 min-w-[250px]  relative"
-          >{item.offer==0?"":
-            <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs px-2 py-0.5 rounded-sm">
-          {item.offer}
-          </div>}
-          <div className="absolute right-[15px] top-3 z-30">
-            <Heart onClick={() => {
-                  const prodId = item._id;
-                  console.log("Address ID to delete:", prodId);
-                  wishlist(prodId);
-              }} className="w-5 h-5 text-gray-600 cursor-pointer" strokeWidth={1.5} />
-          </div>
-           <Swiper
-              modules={[Navigation, Pagination]}
-              navigation
-              pagination={{ clickable: true }}
-              className="w-[220px] rounded-lg h-[270px] "
+              key={item._id}
+              className="bg-white p-4 rounded-lg shadow hover:scale-[1.02] transition-transform duration-300 min-w-[250px] relative"
             >
-              {item.images.map((image, index) => (
-                <SwiperSlide key={index} className="flex  justify-center w-[300px] items-center"
-                onClick={() => {
-                  const prodId = item._id;
-                  console.log("Address ID to delete:", prodId);
-                  viewProdct(prodId);
-              }}>
-                  {/* <div className="w-[300px] h-[200px] flex justify-center items-center overflow-hidden"> */}
+              {item.offer > 0 && (
+                <div className="absolute top-3 left-3 z-20 bg-red-500 text-white text-xs px-2 py-0.5 rounded-sm">
+                  {item.offer}%
+                </div>
+              )}
+             <Swiper
+                modules={[Navigation, Pagination]}
+                navigation
+                pagination={{ clickable: true }}
+                className="w-[220px] rounded-lg h-[270px] "
+              >
+                {item.images.map((image, index) => (
+                  <SwiperSlide 
+                    key={index} 
+                    className="flex justify-center w-[300px] items-center"
+                    onClick={() => viewProdct(item._id)}
+                  >
                     <img
                       src={image}
                       alt={item.name}
                       className="w-full h-full object-cover rounded-lg"
                     />
-                  {/* </div> */}
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
 
-            <h3 className="font-medium">{item.name}</h3>
-            <div className="text-[10px] text-gray-600">
-            {item.description}
+              <h3 className="font-medium">{item.name}</h3>
+              <div className="text-[10px] text-gray-600">
+                {item.description}
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-red-500">₹{item.price}</span>
+                <span className="text-gray-400 line-through text-sm">
+                  ₹{(item.price / (1 - 0.60)).toFixed(2)}
+                </span>
+              </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-red-500">₹{item.price}</span>
-              <span className="text-gray-400 line-through text-sm">
-              ₹{(item.price / (1 - 0.60)).toFixed(2)}
-              </span>
-            </div>
-          </div>
           ))}
-                  </div>
-
-          <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
-            <ChevronRight size={20} />
-          </button>
-          </div>
         </div>
+
+        <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+          <ChevronRight size={20} />
+        </button>
+        </div>
+      </div>
       </div>
 
       <div className="bg-black text-white rounded-lg p-8 mb-8 footerimage">
-        <div className="flex items-center justify-between ">
-          <div>
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          <div className="mb-6 md:mb-0">
             <h2 className="text-2xl font-bold mb-2">Enhance Your comfort</h2>
             <div className="flex gap-2 mb-4">
               <div className="w-8 h-8 bg-white rounded-full"></div>
@@ -346,7 +289,7 @@ showProducts();
             </div>
             <button className="bg-green-500 text-white px-6 py-2 rounded-full">Shop Now</button>
           </div>
-          <img src={puma} alt="Speaker" className="w-84 h-84 object-contain" />
+          <img src={puma} alt="Speaker" className="w-64 h-64 md:w-84 md:h-84 object-contain" />
         </div>
       </div>
 
@@ -372,8 +315,7 @@ showProducts();
         </div>
       </div>
     </div>
-
     </div>
-        </>
-    )
+    </>
+  )
 }

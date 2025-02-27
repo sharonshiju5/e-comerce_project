@@ -29,16 +29,19 @@ router.route("/deleteproduct").post(rh.deleteproduct)
 router.route("/showproduct").post(rh.showproduct)
 router.route("/updateproduct").post(rh.updateproduct)
 router.route("/addoffer").post(rh.addoffer)
+router.route("/block").post(rh.blockProduct)
+
 router.route("/showsingleproduct").post(rh.showsingleproduct)
+
 router.route("/addtocart").post(rh.addtocart)
 router.route("/checkcart").post(rh.checkcart)
 router.route("/showcart").post(rh.showcart)
 router.route("/removecart").post(rh.removecart)
-router.route("/addtowishlist").post(rh.addtowishlist)
 
-
-router.route("/checkwishlist").post(rh.checkwishlist)
-router.route("/showwishlist").post(rh.showwishlist)
+// router.route("/addtowishlist").post(rh.addtowishlist)
+// router.route("/removefromwishlist").post(rh.addtowishlist)
+// router.route("/checkwishlist").post(rh.checkwishlist)
+// router.route("/showwishlist").post(rh.showwishlist)
 
 // adminn Section
 // adminn Section

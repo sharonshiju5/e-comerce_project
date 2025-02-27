@@ -211,6 +211,7 @@ export async function profile(req,res) {
 }
 
 
+
 export async function saveprofile(req,res) {
     try {
         // console.log(res);
@@ -301,7 +302,7 @@ export async function deleteaddress(req,res) {
 export async function addProduct(req, res) {
     try {
 
-        const { userId, name, brand, category, price, stock, sizes, images, material, description } = req.body;
+        const { userId, name, brand, category, price, stock, sizes, images, material, description,block=true } = req.body;
 
         if (!userId) {
             return res.status(400).send({ msg: "User ID is required" });
@@ -329,6 +330,7 @@ export async function addProduct(req, res) {
             material,
             description,
             sellerId,
+            block,
         });
 
         console.log("New Product Created:", newProduct); 
@@ -386,8 +388,6 @@ export async function showproduct(req,res) {
             return res.status(200).send({ msg: "Successfully fetched",Data})
 
         }
-
-        
     } catch (error) {
         console.log(error);
         res.status(500).send({ error });
@@ -448,6 +448,20 @@ export async function addoffer(req, res) {
     }
 }
 
+export async function blockProduct(req,res) {
+    try {
+        const{_id}=req.body
+        const updatedProduct = await productSchema.findOneAndUpdate(
+            { _id },
+            [{ $set: { block: { $not: "$block" } } }],
+            { new: true } 
+          );
+          res.status(201).send({msg:"set product to block"})
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export async function showsingleproduct(req,res) {
     try {
         const{_id}=req.body
@@ -497,6 +511,7 @@ export async function checkcart(req,res) {
     }
 }
 
+
 export async function showcart(req,res) {
     try {
         const { user_id } = req.body;
@@ -539,62 +554,92 @@ export async function removecart(req,res) {
     }
 }
 
-export async function addtowishlist(req,res) {
-    try {
-        const{product_id,user_id}=req.body
-        console.log(product_id,user_id);
-        const wishlist=await wishlistSchema.create({product_id,user_id})
-    } catch (error) {
-        console.log(error);
+// wishlist
+// wishlist
+// wishlist
+
+// export async function addtowishlist(req,res) {
+//     try {
+//         const{product_id,user_id}=req.body
+//         console.log(product_id,user_id);
+//         const wishlist=await wishlistSchema.create({product_id,user_id})
+//     } catch (error) {
+//         console.log(error);
         
-    }
-}
+//     }
+// }
 
-export async function checkwishlist(req,res) {
-    try {
-        const{_id,user_id}=req.body
-        const product_id=_id
-        console.log(product_id);
-        const cart = await wishlistSchema.findOne({ product_id, user_id });
-        console.log("Cart Item:", cart);       
-         console.log(cart);
-        if (cart) {
-            return res.status(201).send({ msg: true }); 
-        }
-        else{
-            return res.status(200).send({msg:false})
-        }
-    } catch (error) {
-        console.log(error+"error in checkcart");
-        return res.status(400).send(error)
+// export async function removefromwishlist(req, res) {
+//     try {
+//         const { product_id, user_id } = req.body;
+//         console.log("Removing from wishlist:", product_id, user_id);
         
-    }
-}
+//         if (!product_id || !user_id) {
+//             return res.status(400).json({ message: "Missing required fields" });
+//         }
+        
+//         // Find and remove the wishlist item
+//         const result = await wishlistSchema.findOneAndDelete({ product_id, user_id });
+//         console.log("Delete result:", result);
+        
+//         if (!result) {
+//             return res.status(404).json({ message: "Item not found in wishlist" });
+//         }
+        
+//         return res.status(200).json({ message: "Product removed from wishlist successfully" });
+//     } catch (error) {
+//         console.log("Error removing item from wishlist:", error);
+//         return res.status(500).json({ error: "Server error", details: error.message });
+//     }
+// }
 
-export async function showwishlist(req,res) {
-    try {
-        const { user_id } = req.body;
-        console.log("User ID:", user_id);
 
-        // Find all cart items for the user
-        const cartItems = await wishlistSchema.find({ user_id });
-        console.log("Cart Items:", cartItems);
+// export async function checkwishlist(req,res) {
+//     try {
+//         const{_id,user_id}=req.body
+//         const product_id=_id
+//         console.log(product_id);
+//         const cart = await wishlistSchema.findOne({ product_id, user_id });
+//         console.log("Cart Item:", cart);       
+//          console.log(cart);
+//         if (cart) {
+//             return res.status(201).send({ msg: true }); 
+//         }
+//         else{
+//             return res.status(200).send({msg:false})
+//         }
+//     } catch (error) {
+//         console.log(error+"error in checkcart");
+//         return res.status(400).send(error)
+        
+//     }
+// }
 
-        if (!cartItems.length) {
-            return res.status(404).json({ message: "No products in cart" });
-        }
+// export async function showwishlist(req,res) {
+//     try {
+//         const { user_id } = req.body;
+//         console.log("User ID:", user_id);
 
-        // Extract product IDs and convert them to ObjectId
-        const productIds = cartItems.map(item => new mongoose.Types.ObjectId(item.product_id));
+//         // Find all cart items for the user
+//         const cartItems = await wishlistSchema.find({ user_id });
+//         console.log("Cart Items:", cartItems);
 
-        // Fetch product details for all products in the cart
-        const products = await productSchema.find({ _id: { $in: productIds } });
+//         if (!cartItems.length) {
+//             return res.status(404).json({ message: "No products in cart" });
+//         }
 
-        console.log("Products in Cart:", products);
-        return res.status(200).json(products);
+//         // Extract product IDs and convert them to ObjectId
+//         const productIds = cartItems.map(item => new mongoose.Types.ObjectId(item.product_id));
 
-    } catch (error) {
-        console.error("Error in showcart:", error);
-        return res.status(500).json({ error: "Server error" });
-    }
-}
+//         // Fetch product details for all products in the cart
+//         const products = await productSchema.find({ _id: { $in: productIds } });
+
+//         console.log("Products in Cart:", products);
+//         return res.status(200).json(products);
+
+//     } catch (error) {
+//         console.error("Error in showcart:", error);
+//         return res.status(500).json({ error: "Server error" });
+//     }
+// }
+
