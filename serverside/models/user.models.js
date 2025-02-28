@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     licence: { type: String },
     company: { type: String },
     sellerId: { type: String, sparse: true },
-    joiningDate: { type: Date, default: Date.now }  
+    joiningDate: { type: Date, default: Date.now },
+    block:{type:Boolean} 
 });
 
 export default mongoose.model.user || mongoose.model("user", userSchema);

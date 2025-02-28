@@ -27,7 +27,7 @@ const {sign} = pkg;
 
 export async function adduser(req, res) {
     try {
-        const { fname, lname, email, account, phone, password, cpassword, licence,company } = req.body;
+        const { fname, lname, email, account, phone, password, cpassword, licence,company ,block=false} = req.body;
         console.log(licence);
         
         if (!(fname && lname && email && account && phone && password && cpassword)) {
@@ -55,23 +55,38 @@ export async function adduser(req, res) {
                 const existingSeller = await userSchema.findOne({ sellerId });
                 if (!existingSeller) isUnique = true;
             }
+            await userSchema.create({ 
+                fname, 
+                lname, 
+                email, 
+                account, 
+                phone, 
+                password: hashedPassword, 
+                sellerId, 
+                licence, 
+                company, 
+                joiningDate: new Date(),
+                block,
+            });
+        return res.status(201).send({ msg: "Successfully created", sellerId });
+
+        }
+        else{
+
+            await userSchema.create({ 
+                fname, 
+                lname, 
+                email, 
+                account, 
+                phone, 
+                password: hashedPassword, 
+                joiningDate: new Date(),
+                block,
+            });
         }
 
-        await userSchema.create({ 
-            fname, 
-            lname, 
-            email, 
-            account, 
-            phone, 
-            password: hashedPassword, 
-            sellerId, 
-            licence, 
-            company, 
-            joiningDate: new Date()
-        });
 
-
-        return res.status(201).send({ msg: "Successfully created", sellerId });
+        return res.status(201).send({ msg: "Successfully created", });
 
     } catch (error) {
         console.error("Error:", error);
@@ -562,6 +577,27 @@ export async function removecart(req,res) {
         
     }
 }
+
+// filter
+// filter
+// filter
+
+export async function filter(req,res) {
+    try {
+        const{category}=req.body
+        console.log(category);
+        
+        const product = await productSchema.find({category}); 
+        console.log(product);
+        
+        return res.status(200).send({ msg: "Successfully fetched",product });
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
 
 // wishlist
 // wishlist

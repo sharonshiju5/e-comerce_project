@@ -38,7 +38,7 @@ function App() {
       {/* product */}
           <Route path="/productview/:_id" Component={ProductDetail}/>
           <Route path="/cart" Component={CartPage}/>
-          <Route path="/wishlist" Component={WishlistPage}/>
+          <Route path="/wishlist/:category" Component={WishlistPage}/>
 
       {/* admin */}
           <Route path="/admin" Component={AdminLogin}/>

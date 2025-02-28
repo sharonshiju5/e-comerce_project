@@ -1,5 +1,6 @@
 import adminSchema from "../models/admin.model.js"
 import userSchema from "../models/user.models.js"
+import productSchema from "../models/product.model.js"
 import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
 import nodemailer from "nodemailer"
@@ -147,4 +148,34 @@ export async function showusers(req,res) {
     console.log(error);
     
   }
+}
+
+export async function blockuser(req,res) {
+  try {
+    const{userId}=req.body
+    const _id=userId
+    console.log(userId);
+    const users=await userSchema.findByIdAndUpdate(
+       _id ,
+      [{ $set: { block: { $not: "$block" } } }],
+      { new: true } 
+    );
+    res.status(201).send({msg:"suceesfully updated",users})
+    console.log(users);
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+
+
+export async function showproduct(req,res) {
+    try {
+      const Data = await productSchema.find();
+      return res.status(200).send({ msg: "Successfully fetched",Data})   
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error });
+    }
 }

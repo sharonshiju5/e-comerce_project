@@ -72,7 +72,6 @@ useEffect(() => {
     try {      
       const user_id = localStorage.getItem("userId");
 
-      // Fetch products
       const productsRes = await axios.post(APIURL + "/showproduct", {user_id});
       
       if (productsRes.status === 200) { 
@@ -93,7 +92,11 @@ useEffect(() => {
   function viewProdct(_id) {
     navigate(`/productview/${_id}`)
   }
-
+  function filtercategory(category) {
+    console.log(category);
+    
+    navigate(`/wishlist/${category}`);
+  }
   return(
     <>
     <Navbar/> 
@@ -194,7 +197,7 @@ useEffect(() => {
         <h2 className="text-xl font-bold mb-4">Browse By Category</h2>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
           {categories.map(category => (
-            <div
+            <div onClick={()=>filtercategory(category.name)}
               key={category.id}
               className="flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
             >

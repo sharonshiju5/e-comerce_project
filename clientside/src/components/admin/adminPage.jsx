@@ -17,37 +17,35 @@ import APIURL from '../path';
 import axios from 'axios';
 
 const AdminPanel = () => {
+  const[update,setupdate]=useState(true)
   // Tab state
   const [activeTab, setActiveTab] = useState('users');
   
   // Mock data for demonstration
   const [users, setUsers] = useState([]);
   
-  const [sellers, setSellers] = useState([
-    { id: 101, name: 'Fashion Outlet', email: 'contact@fashionoutlet.com', status: 'active', products: 45, sales: 230, rating: 4.7 },
-    { id: 102, name: 'Shoe Heaven', email: 'info@shoeheaven.com', status: 'active', products: 78, sales: 456, rating: 4.5 },
-    { id: 103, name: 'Dress Elegance', email: 'support@dresselegance.com', status: 'pending', products: 62, sales: 189, rating: 4.2 },
-    { id: 104, name: 'Stylist Corner', email: 'hello@stylistcorner.com', status: 'active', products: 93, sales: 321, rating: 4.8 },
-  ]);
+  const [sellers, setSellers] = useState([]);
   
-  const [products, setProducts] = useState([
-    { id: 1001, name: 'Casual Running Shoes', seller: 'Shoe Heaven', category: 'Shoes', stock: 45, price: 89.99, status: 'active' },
-    { id: 1002, name: 'Evening Gown', seller: 'Dress Elegance', category: 'Dresses', stock: 12, price: 199.99, status: 'active' },
-    { id: 1003, name: 'Summer Sandals', seller: 'Shoe Heaven', category: 'Shoes', stock: 28, price: 49.99, status: 'active' },
-    { id: 1004, name: 'Cocktail Dress', seller: 'Fashion Outlet', category: 'Dresses', stock: 7, price: 129.99, status: 'active' },
-    { id: 1005, name: 'Leather Boots', seller: 'Shoe Heaven', category: 'Shoes', stock: 0, price: 159.99, status: 'out_of_stock' },
-  ]);
+  const [products, setProducts] = useState([]);
   
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
   
   // Block/unblock user function
-  const toggleBlockUser = (userId) => {
-    setUsers(users.map(user => 
-      user.id === userId 
-        ? {...user, status: user.status === 'active' ? 'blocked' : 'active'} 
-        : user
-    ));
+  const toggleBlockUser =async (userId) => {
+    try {
+      console.log(userId);
+      
+      const res = await axios.post(APIURL + "/blockuser", {userId});
+      if (res.status==201) {
+        setupdate(!update)
+      }
+      console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
   };
   
   // Filtered data based on search term
@@ -80,7 +78,20 @@ const AdminPanel = () => {
       }
     }
     findUsers()
-  },[admintoken])
+    
+    async function findproducts() {
+      try {
+        const res = await axios.get(APIURL + "/showproductadmin");
+        console.log(res);
+        const{Data}=res.data
+        setProducts(Data)
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+    findproducts()
+  },[admintoken,update])
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -89,7 +100,7 @@ const AdminPanel = () => {
         <div className="p-6">
           <h1 className="text-xl font-bold text-gray-800">Admin Dashboard</h1>
         </div>
-        <nav className="mt-6">
+        {/* <nav className="mt-6 w-5"> */}
           <div
             className={`flex items-center w-64 px-6 py-3 cursor-pointer ${
               activeTab === 'users'
@@ -123,7 +134,7 @@ const AdminPanel = () => {
             <ShoppingBag className="w-5 h-5 mr-3" />
             <span>Products</span>
           </div>
-        </nav>
+        {/* </nav> */}
       </div>
       
       {/* Main Content */}
@@ -136,7 +147,7 @@ const AdminPanel = () => {
               {activeTab === 'sellers' && 'Seller Management'}
               {activeTab === 'products' && 'Product Management'}
             </h2>
-            <div className="relative">
+            {/* <div className="relative">
               <input
                 type="text"
                 placeholder="Search..."
@@ -145,27 +156,12 @@ const AdminPanel = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
-            </div>
+            </div> */}
           </div>
         </div>
         
         {/* Content Area */}
         <div className="p-6">
-          {/* Action Bar */}
-          {/* <div className="flex justify-between mb-6">
-            <div className="flex space-x-2">
-              <div className="bg-white p-2 rounded shadow-sm cursor-pointer">
-                <Filter className="w-4 h-4 text-gray-500" />
-              </div>
-              <select className="bg-white py-2 px-3 rounded shadow-sm border-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Filter by Status</option>
-                <option value="active">Active</option>
-                <option value="blocked">Blocked</option>
-                <option value="pending">Pending</option>
-              </select>
-            </div>
-          </div> */}
-          
           {/* Tables */}
           {activeTab === 'users' && (
             <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -197,9 +193,9 @@ const AdminPanel = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {users.map((user) => (
-                    <tr key={user.id} className={user.status === 'blocked' ? 'bg-red-50' : ''}>
+                    <tr key={user._id} className={user.block === true ? 'bg-red-50' : ''}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        #{user._id}
+                        {user._id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{user.name}</div>
@@ -207,9 +203,9 @@ const AdminPanel = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          user.block === false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}>
-                          {user.status === 'active' ? 'Active' : 'Blocked'}
+                          {user.block === false ? 'Active' : 'Blocked'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -224,9 +220,9 @@ const AdminPanel = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button 
-                            className={`p-1 rounded ${user.status === 'active' ? 'text-red-600 hover:bg-red-100' : 'text-green-600 hover:bg-green-100'}`}
-                            onClick={() => toggleBlockUser(user.id)}
-                            title={user.status === 'active' ? 'Block User' : 'Unblock User'}
+                            className={`p-1 rounded ${user.status === 'false' ? 'text-red-600 hover:bg-red-100' : 'text-green-600 hover:bg-green-100'}`}
+                            onClick={() => toggleBlockUser(user._id)}
+                            title={user.block === false ? 'Block User' : 'Unblock User'}
                           >
                             <Ban className="w-4 h-4" />
                           </button>
@@ -249,7 +245,6 @@ const AdminPanel = () => {
                 </div>
               )}
               
-              {/* Pagination */}
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -318,10 +313,12 @@ const AdminPanel = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredSellers.map((seller) => (
-                    <tr key={seller.id} className={seller.status === 'pending' ? 'bg-yellow-50' : ''}>
+                {users
+                  .filter((user) => user.account === "seller")
+                  .map((seller) => (
+                    <tr key={seller._id} className={seller.status === 'pending' ? 'bg-yellow-50' : ''}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        #{seller.id}
+                        {seller.sellerId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{seller.name}</div>
@@ -329,10 +326,10 @@ const AdminPanel = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          seller.status === 'active' ? 'bg-green-100 text-green-800' : 
-                          seller.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
+                          seller.block === false ? 'bg-green-100 text-green-800' : 
+                          seller.block === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
                         }`}>
-                          {seller.status === 'active' ? 'Active' : seller.status === 'pending' ? 'Pending' : 'Blocked'}
+                          {seller.status === false ? 'Active' : seller.status === 'pending' ? 'Pending' : 'Blocked'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -353,7 +350,7 @@ const AdminPanel = () => {
                             <Edit className="w-4 h-4" />
                           </button>
                           <button className="p-1 rounded text-red-600 hover:bg-red-100" title="Block Seller">
-                            <Ban className="w-4 h-4" />
+                            <Ban onClick={() => toggleBlockUser(seller._id)} className="w-4 h-4" />
                           </button>
                           <button className="p-1 rounded text-gray-600 hover:bg-gray-100" title="More Options">
                             <MoreVertical className="w-4 h-4" />
@@ -427,15 +424,15 @@ const AdminPanel = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredProducts.map((product) => (
-                    <tr key={product.id} className={product.status === 'out_of_stock' ? 'bg-red-50' : ''}>
+                    <tr key={product._id} className={product.status === 'out_of_stock' ? 'bg-red-50' : ''}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        #{product.id}
+                        {product._id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{product.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.seller}
+                        {product.sellerId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {product.category}
@@ -448,9 +445,9 @@ const AdminPanel = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          product.block === false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}>
-                          {product.status === 'active' ? 'Active' : 'Out of Stock'}
+                          {product.block === false ? 'Active' : 'Out of Stock'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
