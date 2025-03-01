@@ -30,9 +30,9 @@ const WishlistPage = () => {
     filter()
   },[category])
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
 
   // async function checkcart() {

@@ -53,6 +53,7 @@ nav *{
 .container{
     width: 100%;
     height: 100vh;
+    margin: auto;
     /* background-color: aqua; */
     padding-top: 180px;
 }
