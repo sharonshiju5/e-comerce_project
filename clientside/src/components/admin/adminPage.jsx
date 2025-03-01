@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext,useState } from 'react';
+import { MessageContext } from "../context";
+
 import { 
   Users, 
   Store, 
@@ -17,6 +19,8 @@ import APIURL from '../path';
 import axios from 'axios';
 
 const AdminPanel = () => {
+  const { isUserBlocked, toggleUserBlock } = useContext(MessageContext);
+
   const[update,setupdate]=useState(true)
   // Tab state
   const [activeTab, setActiveTab] = useState('users');
@@ -39,6 +43,7 @@ const AdminPanel = () => {
       const res = await axios.post(APIURL + "/blockuser", {userId});
       if (res.status==201) {
         setupdate(!update)
+        setMessage(prevMessage => !prevMessage);
       }
       console.log(res);
       
@@ -64,6 +69,7 @@ const AdminPanel = () => {
     product.seller.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const admintoken=localStorage.getItem("admintoken")
+
   useEffect(()=>{
 
     async function findUsers() {

@@ -25,34 +25,48 @@ const Login = () => {
   
   const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log(formData);
-try {
-  const res = await axios.post(APIURL+"/login", formData);
-  console.log(res.data.msg);
-  
-  if (res.status==200) {
-    const { token, msg,email,userId } = res.data;
-    console.log(res.data);
-    console.log(userId);
+    // console.log(formData);
+  try {
+    const res = await axios.post(APIURL+"/login", formData);
+    console.log(res.data.msg);
     
-    toast.success(msg, {
-      position: "top-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      });
-    localStorage.setItem("token",token)
-    localStorage.setItem("email",email)
-    localStorage.setItem("userId",userId)
-    console.log(token,msg);
-    console.log("user login succes");
-    setTimeout(() => {
-      navigate("/")
-    }, 1500);
+    if (res.status==200) {
+      const { token, msg,email,userId } = res.data;
+      console.log(res.data);
+      console.log(userId);
+
+
+        if (msg=="you hav been blocked by the user") {
+          toast.error(msg, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }else{
+          toast.success(msg, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+          localStorage.setItem("token",token)
+          localStorage.setItem("email",email)
+          localStorage.setItem("userId",userId)
+          console.log(token,msg);
+          console.log("user login succes");
+          setTimeout(() => {
+            navigate("/")
+          }, 1500);
+        }
   }
   
 } catch (error) {

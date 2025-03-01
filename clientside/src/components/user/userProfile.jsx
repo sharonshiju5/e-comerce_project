@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext,useState } from "react";
+
 import {  Package,  MapPin, Plus, Edit2 } from "lucide-react";
 import { ToastContainer, toast } from 'react-toastify';
 import "../css/index.css"
@@ -10,6 +11,8 @@ import ProductForm from "../productpage/addproduct";
 import SellerProducts from "../productpage/productview";
 import sound from "../../assets/sound.mp3"
 import Navbar from "../productpage/nav";
+import { MessageContext } from "../context";
+
 
 const ProfilePage = () => {
   const [edit, setEdit] = useState(false);
@@ -32,7 +35,7 @@ const ProfilePage = () => {
     land: '',
     altrenativ: '',
   });
-  
+  const { isUserBlocked } = useContext(MessageContext);
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
     const storedUserId = localStorage.getItem("userId");
@@ -55,6 +58,14 @@ const ProfilePage = () => {
         const{user}=res.data
         setUser(user[0])
         setFetched(true); 
+        console.log(user);
+        if (user[0].block===true) {
+          localStorage.removeItem("token")
+          localStorage.removeItem("userId")
+          localStorage.removeItem("email")
+          alert("you have been blocked by the admin")
+          window.location.reload()
+        }
         // console.log(user[0].fname);
 
       } catch (error) {
@@ -65,7 +76,7 @@ const ProfilePage = () => {
     if (!fetched) {
       profile();
     }
-  }, [fetched,formData]);
+  }, [fetched,formData,isUserBlocked]);
 // console.log(user);
 
   const userData = {

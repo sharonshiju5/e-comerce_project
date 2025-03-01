@@ -118,8 +118,12 @@ export async function logine(req,res){
         const token= await sign({userID:user._id},process.env.JWT_KEY,
           {expiresIn:"24h"})
         //   const userId = await userSchema.findOne({ email },{_id});
-    
-        return res.status(200).json({ msg: "Successfully logged in", token,email,userId: user._id  });
+        if (user.block===true){
+
+            return res.status(200).json({ msg: "you hav been blocked by the user"});
+        }else{
+            return res.status(200).json({ msg: "Successfully logged in", token,email,userId: user._id  });
+        }
     
       } catch (error) {
         console.error("Login Error:", error);
@@ -127,17 +131,11 @@ export async function logine(req,res){
       }
 }
 
-// function generateSixDigitNumber() {
-//     return Math.floor(100000 + Math.random() * 900000);
-// }
-
 export async function forgetPassword(req,res) {
 
     console.log(req.body);
     
     try {
-        // const randomNumber = generateSixDigitNumber();
-            // send mail with defined transport object
             const email=req.body.email
             const info = await transporter.sendMail({
             from: 'contacte169@gmail.com', // sender address
