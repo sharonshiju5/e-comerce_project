@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate ,useParams } from "react-router-dom";
 import APIURL from '../path';
+import { Heading1 } from 'lucide-react';
 
 const WishlistPage = () => {
   const navigate=useNavigate()
@@ -12,11 +13,12 @@ const WishlistPage = () => {
 
   const { category } = useParams();
   console.log(category);
+  const user_id=localStorage.getItem("useId")
   useEffect(()=>{
 
     async function filter() {
       try {
-        const res=await axios.post(APIURL+"/filter",{category})
+        const res=await axios.post(APIURL+"/filter",{category,user_id})
         // console.log(res);
         const{product}=res.data
         setwishlist(product)
@@ -102,6 +104,7 @@ function viewprodcut(_id) {
         </div>
 
         {/* Wishlist items */}
+        {wishlistItems?
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {wishlistItems.map((item) => (
             <div onClick={()=>viewprodcut(item._id)}
@@ -132,7 +135,7 @@ function viewprodcut(_id) {
               </button>
             </div>
           ))}
-        </div>
+        </div>:<h1>no product found</h1>}
       </div>
       {/* Footer */}
       <footer className="bg-black text-white pt-16 mt-96 pb-8 ">

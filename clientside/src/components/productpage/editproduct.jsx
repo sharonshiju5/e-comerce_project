@@ -92,6 +92,12 @@ const Editproduct = (productid) => {
         }));
     };
 
+    function removeSize(size) {
+        setProduct(prev => ({
+          ...prev,
+          sizes: prev.sizes.filter((_, index) => index !== size)
+        }));    
+    }
     return (
         <div className="w-full p-8 bg-white">
             <form onSubmit={addProducts}>
@@ -118,10 +124,43 @@ const Editproduct = (productid) => {
                     {product.images.map((imgSrc, index) => (
                         <div key={index} className="relative group">
                             <img src={imgSrc} alt={`Product ${index}`} className="w-full h-24 object-cover rounded" />
-                            <button type="button" onClick={() => remImage(index)} className="absolute top-1 right-1 bg-black bg-opacity-60 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                            <button 
+                              type="button" 
+                              onClick={() => remImage(index)} 
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm"
+                              aria-label="Remove image">
+                              ✕
+                            </button>
                         </div>
                     ))}
                 </div>
+                <div className="flex mt-2">
+                    <input
+                        type="text"
+                        name="size"
+                        placeholder="Custom Size"
+                        className="border p-2 rounded w-full"
+                        value={customSize}
+                        onChange={(e) => setCustomSize(e.target.value)}
+                    />
+                    <button type="button" onClick={addCustomSize} className="bg-blue-500 text-white p-2 ml-2 rounded">
+                        Add
+                    </button>
+                </div>
+                <ul className="flex flex-wrap gap-2 items-center">
+                    {product.sizes.map((size, index) => (
+                    <li key={index} className="flex items-center border rounded-md px-3 py-1 bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span className="mr-2 text-sm font-medium">{size}</span>
+                        <button type="button" onClick={()=>removeSize(index)} className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-gray-200">
+                          <img 
+                            className="h-2 w-2 opacity-70" 
+                            src="https://cdn-icons-png.flaticon.com/128/657/657059.png" 
+                            alt="Remove size" 
+                          />
+                        </button>
+                    </li>
+                    ))}
+                </ul>
                 
                 <h3 className="text-lg font-semibold text-blue-600 mt-6">Pricing & Stock</h3>
                 <input type="number" name="price" placeholder="Price" className="border p-2 rounded w-full mt-2" value={product.price} onChange={handleChange} />

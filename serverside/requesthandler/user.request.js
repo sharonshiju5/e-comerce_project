@@ -2,7 +2,7 @@ import userSchema from "../models/user.models.js"
 import addresSchema from "../models/addres.model.js"
 import productSchema from "../models/product.model.js"
 import cartSchema from "../models/cart.model.js"
-import wishlistSchema from "../models/wishlist.js"
+import orderschema from "../models/order.model.js"
 
 import bcrypt from "bcrypt"
 import pkg from 'jsonwebtoken';
@@ -116,7 +116,7 @@ export async function logine(req,res){
         }
     
         const token= await sign({userID:user._id},process.env.JWT_KEY,
-          {expiresIn:"24h"})
+          {expiresIn:"1m"})
         //   const userId = await userSchema.findOne({ email },{_id});
         if (user.block===true){
 
@@ -597,93 +597,59 @@ export async function filter(req,res) {
 }
 
 
-
-// wishlist
-// wishlist
-// wishlist
-
-// export async function addtowishlist(req,res) {
-//     try {
-//         const{product_id,user_id}=req.body
-//         console.log(product_id,user_id);
-//         const wishlist=await wishlistSchema.create({product_id,user_id})
-//     } catch (error) {
-//         console.log(error);
-        
-//     }
-// }
-
-// export async function removefromwishlist(req, res) {
-//     try {
-//         const { product_id, user_id } = req.body;
-//         console.log("Removing from wishlist:", product_id, user_id);
-        
-//         if (!product_id || !user_id) {
-//             return res.status(400).json({ message: "Missing required fields" });
-//         }
-        
-//         // Find and remove the wishlist item
-//         const result = await wishlistSchema.findOneAndDelete({ product_id, user_id });
-//         console.log("Delete result:", result);
-        
-//         if (!result) {
-//             return res.status(404).json({ message: "Item not found in wishlist" });
-//         }
-        
-//         return res.status(200).json({ message: "Product removed from wishlist successfully" });
-//     } catch (error) {
-//         console.log("Error removing item from wishlist:", error);
-//         return res.status(500).json({ error: "Server error", details: error.message });
-//     }
-// }
+// order product
+// order product
+// order product
 
 
-// export async function checkwishlist(req,res) {
-//     try {
-//         const{_id,user_id}=req.body
-//         const product_id=_id
-//         console.log(product_id);
-//         const cart = await wishlistSchema.findOne({ product_id, user_id });
-//         console.log("Cart Item:", cart);       
-//          console.log(cart);
-//         if (cart) {
-//             return res.status(201).send({ msg: true }); 
-//         }
-//         else{
-//             return res.status(200).send({msg:false})
-//         }
-//     } catch (error) {
-//         console.log(error+"error in checkcart");
-//         return res.status(400).send(error)
-        
-//     }
-// }
 
-// export async function showwishlist(req,res) {
-//     try {
-//         const { user_id } = req.body;
-//         console.log("User ID:", user_id);
+export async function buyproduct(req, res) {
+    try {
+        const { product, user_id } = req.body;
 
-//         // Find all cart items for the user
-//         const cartItems = await wishlistSchema.find({ user_id });
-//         console.log("Cart Items:", cartItems);
+        // Check if any product is out of stock
+        const outOfStock = product.some(item => item.stock === 0);
+        if (outOfStock) {
+            return res.status(400).send({ msg: "Out of stock" });
+        }
 
-//         if (!cartItems.length) {
-//             return res.status(404).json({ message: "No products in cart" });
-//         }
+        // Fetch user details
+        const user = await userSchema.findById(user_id);
+        if (!user) {
+            return res.status(404).send({ msg: "User not found" });
+        }
 
-//         // Extract product IDs and convert them to ObjectId
-//         const productIds = cartItems.map(item => new mongoose.Types.ObjectId(item.product_id));
+        for (const item of product) {
+            const decreaseAmount = item.quantity ? Number(item.quantity) : 1; // Ensure it's a number
 
-//         // Fetch product details for all products in the cart
-//         const products = await productSchema.find({ _id: { $in: productIds } });
+            // Find the product to check stock before updating
+            const productData = await productSchema.findById(item._id);
 
-//         console.log("Products in Cart:", products);
-//         return res.status(200).json(products);
+            if (!productData || productData.stock < decreaseAmount) {
+                return res.status(400).send({ msg: `Not enough stock for ${item.name}` });
+            }
 
-//     } catch (error) {
-//         console.error("Error in showcart:", error);
-//         return res.status(500).json({ error: "Server error" });
-//     }
-// }
+            // Update stock only if enough is available
+            await productSchema.findByIdAndUpdate(
+                item._id,
+                { $inc: { stock: -decreaseAmount } },
+                { new: true } // Ensures updated document is returned
+            );
+        }
 
+        // Create order
+        const order = await orderschema.create({
+            products: product,
+            userId: user._id,
+            name: user.fname,
+            email: user.email,
+            phone: user.phone
+        });
+
+        return res.status(200).send({ msg: "Order successful", order });
+
+    } catch (error) {
+        console.error("❌ Error in buyproduct:", error);
+        return res.status(500).send({ msg: "Internal server error", error: error.message });
+    }
+}

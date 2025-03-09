@@ -30,17 +30,20 @@ export default function Navbar() {
     { name: 'Contact', href: '#' }
   ];
       
-  const handleClickOutside = (e) => {
-    if (!e.target.closest('.profile-menu')) {
-      setShowProfileMenu(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".profile-menu")) {
+        setShowProfileMenu(false);
+      }
+  
+    };
 
-  const profileMenuItems = [
-    { name: 'My Profile', icon: User, link: 'userprofile' },
-    { name: 'Settings', icon: Settings, link: 'settings'},
-    { name: 'Wishlist', icon: Heart, link: 'wishlist'},
-  ];
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   function showinput() {
     setInput(!input);
@@ -52,6 +55,7 @@ export default function Navbar() {
     localStorage.removeItem("email");
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    window.location.reload()
   }
 
   function showfilter() {
@@ -95,9 +99,12 @@ export default function Navbar() {
     setShowSearch(false);
   }
 
+  function Home() {
+    useNavigate("/")
+  }
   return (
     <>
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white shadow-sm" >
         <div className="max-w-7xl mx-auto px-4">
           {/* Desktop Navigation */}
           <div className="flex items-center justify-between h-16">
@@ -112,22 +119,30 @@ export default function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              {!showSearch && navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
-                >
-                  {link.name}
-                </a>
-              ))}
+              <Link to={"/"} className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
+                    Home
+              </Link>
+              
+              <Link 
+              // to={`/wishlist/:${""}`}
+                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
+                    products
+              </Link>
+              <Link
+                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
+                    about
+              </Link>
+              <Link
+                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
+                    contact
+                </Link>
               {showSearch && (
                 <div className="relative">
                   <div className="flex items-center w-full max-w-md animate-slideIn">
                     <input
                       type="text"
                       placeholder="Search..."
-                      className="w-full px-4 py-1 rounded-xl border focus:outline-none"
+                      className="w-full px-4 py-1 search-input rounded-xl border focus:outline-none"
                       autoFocus
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
@@ -158,7 +173,6 @@ export default function Navbar() {
                             filteredProducts.map((item, index) => (
                               <motion.li 
                                 key={item._id} 
-                                onClick={() => handleSelect(item)}
                                 className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center text-gray-800"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -168,9 +182,9 @@ export default function Navbar() {
                                 }}
                                 whileHover={{ backgroundColor: "#F3F4F6" }}
                               >
-                                {item.image && (
+                                {item.images && (
                                   <img 
-                                    src={item.image} 
+                                    src={item.images[0]} 
                                     alt={item.name} 
                                     className="w-10 h-10 object-cover rounded mr-3"
                                     onError={(e) => {
@@ -241,17 +255,14 @@ export default function Navbar() {
                 {/* Dropdown Menu */}
                 {showProfileMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                    {profileMenuItems.map((item, index) => (
                       <Link
-                        to={item.link}
-                        key={item.name}
+                        to={"/userprofile"}
                         className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200
-                          ${index === profileMenuItems.length - 1 ? 'border-t border-gray-100' : ''}`}
+                           `}
                       >
-                        <item.icon className="h-4 w-4 mr-3" />
-                        <span>{item.name}</span>
+                        <User className="h-4 w-4 mr-3" />
+                        <span>userprofile</span>
                       </Link>
-                    ))}
                     <a
                       href="#"
                       className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
@@ -273,7 +284,16 @@ export default function Navbar() {
                 {isOpen ? (
                   <X className="h-6 w-6 text-gray-600" />
                 ) : (
+                  <div className="flex items-center">
+                {!token ? (
+                <Link to={"/login"}>
+                  <button type="button" className="text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900">
+                    Login
+                  </button>
+                </Link>
+              ) : null}
                   <Menu className="h-6 w-6 text-gray-600" />
+                  </div>
                 )}
               </button>
             </div>
@@ -320,7 +340,6 @@ export default function Navbar() {
                             filteredProducts.map((item, index) => (
                               <motion.li 
                                 key={item._id} 
-                                onClick={() => handleSelect(item)}
                                 className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center text-gray-800"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -328,11 +347,12 @@ export default function Navbar() {
                                   duration: 0.2,
                                   delay: index * 0.05
                                 }}
+                                onClick={()=>viewProdct(item._id)}
                                 whileHover={{ backgroundColor: "#F3F4F6" }}
                               >
-                                {item.image && (
+                                {item.images && (
                                   <img 
-                                    src={item.image} 
+                                    src={item.images[0]} 
                                     alt={item.name} 
                                     className="w-10 h-10 object-cover rounded mr-3"
                                     onError={(e) => {
@@ -343,9 +363,9 @@ export default function Navbar() {
                                 )}
                                 <div>
                                   <span className="font-medium block">{item.name}</span>
-                                  {item.price && (
-                                    <span className="text-sm text-gray-500">${item.price.toFixed(2)}</span>
-                                  )}
+                                  {/* {item.price && ( */}
+                                     <span className="text-sm text-gray-500">{item.price}</span>
+                                  {/* )} */}
                                 </div>
                               </motion.li>
                             ))

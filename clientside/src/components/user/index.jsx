@@ -114,7 +114,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Flash Sales */}
+      {/* Flash Sales */}{products.length!=0?
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Flash Sales up to 60% off</h2>
@@ -183,7 +183,6 @@ useEffect(() => {
             </div>
           ))}
         </div>
-
         {/* Right Navigation Button */}
         <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
           <ChevronRight size={20} />
@@ -191,6 +190,7 @@ useEffect(() => {
       </div>
     </div>
       </div>
+        :""}
 
       {/* Categories */}
       <div className="mb-8">
@@ -207,15 +207,16 @@ useEffect(() => {
           ))}
         </div>
       </div>
-
       {/* Best Selling Products */}
+
+      <div>
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Best Selling Products in shirts</h2>
           <button className="text-red-500">View All</button>
         </div>
         <div className="relative w-full">
-      {/* Carousel Container */}
+        {/* Carousel Container */}
       <div className="flex items-center">
         {/* Left Navigation Button */}
         <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
@@ -295,7 +296,7 @@ useEffect(() => {
           <img src={puma} alt="Speaker" className="w-64 h-64 md:w-84 md:h-84 object-contain" />
         </div>
       </div>
-
+      </div>
       {/* Footer Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-8 border-t">
         <div className="flex items-center justify-center">

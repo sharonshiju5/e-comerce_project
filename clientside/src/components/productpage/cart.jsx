@@ -67,6 +67,21 @@ const CartPage = () => {
     }
     showsingleproduct();
   }, [user_id]);
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+  
+
+  async function ordertheproduct(product) {
+    try {
+      const res = await axios.post(APIURL + "/buyprodct", { product,user_id });
+      console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  console.log(product);
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -142,16 +157,7 @@ const CartPage = () => {
              Return To Shop
              </Link> 
             </button>
-            {/* <div className="flex mt-4">
-              <input 
-                type="text" 
-                placeholder="Coupon Code" 
-                className="border rounded-l px-4 py-2 focus:outline-none focus:border-red-500 w-full"
-              />
-              <button className="bg-red-500 text-white px-4 py-2 rounded-r hover:bg-red-600">
-                Apply Coupon
-              </button>
-            </div> */}
+            
           </div>
 
           <div className="w-full md:w-1/2 lg:w-2/5">
@@ -172,7 +178,7 @@ const CartPage = () => {
                 <span className="font-medium">
                   ₹{(fullprice > 2000 ? fullprice : fullprice + 250).toFixed(2)}
                 </span>              </div>
-              <button className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600">
+              <button onClick={()=>ordertheproduct(product)} className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600">
                order now
               </button>
             </div>
@@ -181,11 +187,10 @@ const CartPage = () => {
       </div>
 
 
-      {/* Footer - Added proper z-index and positioning to ensure it stays at the bottom */}
+      {/* footer */}
       <footer className="bg-black text-white mt-auto pt-12 pb-6 relative z-10">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Column 1 */}
             <div>
               <h2 className="text-xl font-bold mb-6">Exclusive</h2>
               <h3 className="mb-4">Subscribe</h3>
@@ -204,7 +209,6 @@ const CartPage = () => {
               </div>
             </div>
 
-            {/* Column 2 */}
             <div>
               <h2 className="text-xl font-bold mb-6">Support</h2>
               <p className="mb-2">111 Bijoy sarani, Dhaka,</p>
@@ -213,7 +217,6 @@ const CartPage = () => {
               <p className="mb-2">+88015-88888-9999</p>
             </div>
 
-            {/* Column 3 */}
             <div>
               <h2 className="text-xl font-bold mb-6">Account</h2>
               <ul className="space-y-2">
@@ -225,7 +228,6 @@ const CartPage = () => {
               </ul>
             </div>
 
-            {/* Column 4 */}
             <div>
               <h2 className="text-xl font-bold mb-6">Quick Link</h2>
               <ul className="space-y-2">
@@ -238,7 +240,6 @@ const CartPage = () => {
           </div>
 
           <div className="border-t border-gray-700 mt-12 pt-6 text-center text-sm text-gray-400">
-            {/* <p>© Copyright Rimel 2022. All right reserved */}
           </div>
         </div>
       </footer>
