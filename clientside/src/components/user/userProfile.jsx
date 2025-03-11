@@ -12,6 +12,7 @@ import SellerProducts from "../productpage/productview";
 import Navbar from "../productpage/nav";
 import sound from "../../assets/sound.mp3"
 import { MessageContext } from "../context";
+import LoginPrompt from "../productpage/LoginPrompt";
 
 
 const ProfilePage = () => {
@@ -95,12 +96,7 @@ const ProfilePage = () => {
   }
 
 
-  const profileMenuItems = [
-    { name: 'My Profile', icon: User, link: 'userprofile' },
-    { name: 'Settings', icon: Settings , link: 'settings'},
-    { name: 'Wishlist', icon: Heart , link: 'wishlist'},
-    { name: 'addproduct', icon: Heart , link: 'addproduct'},
-  ];
+  const userId=localStorage.getItem("userId")
 
   // Close dropdown when clicking outside
   const handleClickOutside = (e) => {
@@ -277,6 +273,8 @@ const deleteAddress = async (_id) => {
   return (
     <>
     <Navbar/>
+    {
+      userId?(
     <div className="main-container">
     <div className="flex h-full w-full bg-gray-100">
       {/* Sidebar */}
@@ -539,7 +537,10 @@ const deleteAddress = async (_id) => {
 
         <ToastContainer/>
     </div>
-        </div>
+    </div>
+        ):(
+        <div className="pt-12"><LoginPrompt/></div>
+      )}
     </>
   );
 };

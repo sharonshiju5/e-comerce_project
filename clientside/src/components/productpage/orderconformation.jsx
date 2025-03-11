@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CheckIcon, PackageIcon, TruckIcon, CalendarIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const OrderSuccessAnimation = () => {
   const [animate, setAnimate] = useState(false);
@@ -158,7 +159,9 @@ const OrderSuccessAnimation = () => {
               </div>
               <span className="text-gray-600">Estimated Delivery:</span>
             </div>
-            <span className="font-medium text-gray-800">March 15, 2025</span>
+            <span className="font-medium text-gray-800">
+              {new Date(new Date().setDate(new Date().getDate() + 10)).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}
+            </span>
           </div>
         </div>
         
@@ -176,19 +179,23 @@ const OrderSuccessAnimation = () => {
         </div>
         
         {/* Continue shopping button with delayed appearance and hover effect */}
+        <Link to={"/"}>
         <button 
           className={`w-full py-3 mt-6 font-medium text-white transition-all duration-500 bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 delay-2400 
             ${animate ? 'opacity-100 translate-y-0 hover:shadow-lg hover:-translate-y-1' : 'opacity-0 translate-y-4'}`}
           style={{transition: 'all 0.3s ease'}}>
           Continue Shopping
         </button>
+        </Link>
         
         {/* Track order link with delayed appearance */}
         <div className={`mt-4 text-center transition-all duration-500 delay-2600
           ${animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <Link to={"/orderpage"}>
           <a href="#" className="text-blue-600 hover:text-blue-800 hover:underline">
             Track your order
           </a>
+          </Link>
         </div>
       </div>
     </div>

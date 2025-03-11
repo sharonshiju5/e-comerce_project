@@ -733,7 +733,7 @@ export async function buyproduct(req, res) {
 
     } catch (error) {
         console.error("❌ Error in buyproduct:", error);
-        return res.status(500).send({ msg: "Internal server error", error: error.message });
+        return res.status(500).send({ msg: "net work issue", error: error.message });
     }
 }
 

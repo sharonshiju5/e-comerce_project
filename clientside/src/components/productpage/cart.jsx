@@ -3,16 +3,18 @@ import React, { useEffect, useState } from 'react';
 import APIURL from '../path';
 import { useParams,Link } from 'react-router-dom';
 import Navbar  from "../productpage/nav";
-import OrderSuccessAnimation from './order';
+import OrderSuccessAnimation from './orderconformation';
 import "../css/order.css"
 import { ToastContainer, toast } from 'react-toastify';
+import LoginPrompt from './LoginPrompt';
+import OrderLoadingScreen from './orderprocessing';
 
 
 const CartPage = () => {
   const [fullprice, setFullprice] = useState(0);
   const [product, setProducts] = useState([]);
   const[ordersucces,setordersucces]=useState(false)
-  
+  const[loading,setLoading]=useState(false)
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return;
     
@@ -77,6 +79,7 @@ const CartPage = () => {
   
 
   async function ordertheproduct(product) {
+    setLoading(true)
     try {
       const res = await axios.post(APIURL + "/buyproduct", { product,user_id });
       console.log(res);
@@ -84,10 +87,14 @@ const CartPage = () => {
         setordersucces(true)
         setTimeout(() => {
         setordersucces(false)
+        setLoading(false)
         window.location.reload()
-        }, 5000);
+        }, 10000);
       }
     } catch (error) {
+      if (error.response?.data.msg || error.message) {
+        setLoading(false)
+      }
       toast.error(error.response?.data.msg || error.message, {
         position: "top-right",
         autoClose: 1200,
@@ -103,16 +110,27 @@ const CartPage = () => {
   }
   console.log(product);
   
+
+
+ 
   return (
     <div className="flex flex-col min-h-screen">
   {/* Cart Content */}
   <Navbar/>
-  
+  {user_id?<>
   {ordersucces ? (
     <div className="flex-grow flex items-center mt-15 justify-center animate-appear">
-  <OrderSuccessAnimation />
-</div>
+      <OrderSuccessAnimation />
+    </div>
   ) : (
+    <>
+    {loading ? (
+  <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-100/75 backdrop-blur-sm z-50 animate-fade-in">
+    <div className="transform transition-all duration-300 scale-100 hover:scale-105">
+      <OrderLoadingScreen />
+    </div>
+  </div>
+) : ""}
     <div className="container mx-auto px-6 pb-16 flex-grow overflow-auto">
       {/* Cart Table */}
       <div className="overflow-x-auto max-w-full relative">          
@@ -210,7 +228,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div></>
   )}
 
   {/* footer */}
@@ -269,6 +287,12 @@ const CartPage = () => {
       </div>
     </div>
   </footer><ToastContainer></ToastContainer>
+  </>
+  :(
+  <div className='mt-10'>
+    <LoginPrompt/>
+  </div>
+  )}
 </div>
   );
 };

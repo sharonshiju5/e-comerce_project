@@ -10,6 +10,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [singleprod,setsingleprod]=useState({})
   const [cart,setcart]=useState()
+  const user_id=localStorage.getItem("userId")
 
   const { _id } = useParams();
   useEffect(()=>{
@@ -35,7 +36,6 @@ const ProductDetail = () => {
     async function checkcart() {
       try {
         console.log(_id);
-        const user_id=localStorage.getItem("userId")
         const res=await axios.post(APIURL+"/checkcart",{_id,user_id})
         console.log(res.data);
         if (res.status==200) {
@@ -73,38 +73,16 @@ const ProductDetail = () => {
 
   return (
     <>
-    <Nav>
-      </Nav>
+    <Nav/>
     <div className="max-w-7xl pt-18 mx-auto px-4">
       {/* Top Banner */}
       <div className="bg-black text-white text-center py-2 -mx-4">
 
       </div>
-
-      {/* Navigation */}
-      {/* <nav className="flex items-center justify-between py-4">
-        <div className="text-xl font-bold">Exclusive</div>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-red-500">Home</a>
-          <a href="#" className="hover:text-red-500">Contact</a>
-          <a href="#" className="hover:text-red-500">About</a>
-          <a href="#" className="hover:text-red-500">Sign Up</a>
-        </div>
-        <div className="flex items-center gap-4">
-          <input 
-            type="text" 
-            placeholder="What are you looking for?"
-            className="px-4 py-2 bg-gray-100 rounded-md"
-          />
-          <button className="hover:text-red-500">❤️</button>
-          <button className="hover:text-red-500">🛒</button>
-          <button className="hover:text-red-500">👤</button>
-        </div>
-      </nav> */}
-
-      {/* Breadcrumb */}
       <div className="flex gap-2 text-gray-500 my-4">
-        <span>Home</span>
+        <Link to={"/"}>
+          <span>Home</span>
+        </Link>
         <span>/</span>
         <span>{singleprod.category}</span>
         <span>/</span>
@@ -180,6 +158,7 @@ const ProductDetail = () => {
           </div>
 
           {/* Quantity and Actions */}
+          {user_id? 
           <div className="flex gap-4 items-center mb-6">
             <div className="flex items-center border rounded">
               {cart? <button 
@@ -190,7 +169,6 @@ const ProductDetail = () => {
               </button>:
               <button 
               className="px-4 py-2"
-              // onClick={() => addtocart(singleprod._id)}
               ><Link to={"/cart"}>
                 go to cart
               </Link>
@@ -200,11 +178,24 @@ const ProductDetail = () => {
             <button className="bg-red-500 text-white px-8 py-2 rounded">
               Buy Now
             </button>
-            <button className="border border-red-500 p-2 rounded">
-              ❤️
-            </button>
           </div>
-
+          :
+          <div className="flex gap-4 items-center mb-6">
+            <Link to={"/login"}>
+              <div className="flex items-center shadow-sm rounded">
+                <button className="px-5 py-2.5 bg-blue-600 text-white font-medium text-sm rounded transition-all duration-300 hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center space-x-2 group">
+                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                  </svg>
+                  <span className="relative inline-block overflow-hidden">
+                    Please login to purchase
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
+                  </span>
+                </button>
+              </div>
+            </Link>
+          </div>
+          }
           {/* Delivery Info */}
           <div className="border rounded-lg p-4">
             <div className="flex items-center gap-4 mb-4">

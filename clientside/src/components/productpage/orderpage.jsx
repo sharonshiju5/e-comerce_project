@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import APIURL from '../path';
 import { motion } from 'framer-motion';
 import Navbar from "../productpage/nav";
+import LoginPrompt from './LoginPrompt';
 
 const OrderedProducts = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
@@ -14,7 +14,6 @@ const OrderedProducts = () => {
 
   async function fetchOrderDetails() {
     try {
-      setLoading(true);
       const res = await axios.post(APIURL + "/orders", { userId });
       if (res.status === 200) {
         const { prod } = res.data;
@@ -23,9 +22,7 @@ const OrderedProducts = () => {
     } catch (error) {
       console.log("Error fetching orders:", error);
       setError("Failed to load orders. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
+    } 
   }
 
   useEffect(() => {
@@ -46,11 +43,7 @@ const OrderedProducts = () => {
     });
   };
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-screen bg-gray-50">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
-    </div>
-  );
+  
   
   if (error) return (
     <motion.div 
@@ -79,6 +72,7 @@ const OrderedProducts = () => {
       >    
     
       <Navbar/>
+      {userId?(
       <div className="container mx-auto p-4 max-w-5xl">
         <h2 className="text-3xl font-bold mb-8 text-gray-800">Your Orders</h2>
         
@@ -281,6 +275,11 @@ const OrderedProducts = () => {
           </div>
         )}
       </div>
+      ):(
+        <div className='mt-10'>
+          <LoginPrompt/>
+        </div>
+      )}
     </motion.div>
     </>
   );
