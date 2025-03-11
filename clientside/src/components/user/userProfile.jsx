@@ -79,12 +79,7 @@ const ProfilePage = () => {
   }, [fetched,formData,isUserBlocked]);
 // console.log(user);
 
-  const userData = {
-    name: `"John Doe"`,
-    email: "john.doe@example.com",
-    phone: "+1 234 567 8900",
-    address: "123 Main St, City, Country",
-  };
+  
 
 
   const[input,setInput]=useState(true)
@@ -94,12 +89,7 @@ const ProfilePage = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const navLinks = [
-    { name: 'Home', href: '#' },
-    { name: 'Products', href: '#' },
-    { name: 'About', href: '#' },
-    { name: 'Contact', href: '#' }
-  ];
+
   function showinput() {
       setInput(!input)
   }
@@ -190,6 +180,16 @@ const ProfilePage = () => {
           console.warn("No address data received.");
       }
     } catch (error) {
+      toast.error(error.response?.data.msg || error.message, {
+        position: "top-right",
+        autoClose: 1200,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
         console.error("Axios error:", error.response?.data || error.message);
     }
   };
@@ -260,6 +260,16 @@ const deleteAddress = async (_id) => {
       }
 
   } catch (error) {
+    toast.error(error.response?.data.msg || error.message, {
+            position: "top-right",
+            autoClose: 1200,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
       console.error("Axios error:", error.response?.data || error.message);
   }
 };
@@ -284,12 +294,11 @@ const deleteAddress = async (_id) => {
         <button className={`p-3 rounded-md flex items-center space-x-2 ${activeTab === "profile" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("profile")}>
           <User /> <span>Personal Info</span>
         </button>
+        <Link to={"/orderpage"}>
         <button className={`p-3 rounded-md flex items-center space-x-2 ${activeTab === "orders" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("orders")}>
           <Package /> <span>My Orders</span>
         </button>
-        <button className={`p-3 rounded-md flex items-center space-x-2 ${activeTab === "wishlist" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("wishlist")}>
-          <Heart /> <span>Wishlist</span>
-        </button>
+        </Link>
         <button  className={`rounded-md flex items-center space-x-2 ${activeTab === "addresses" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`} onClick={() => setActiveTab("addresses")}>
           <MapPin className="ml-3" /> <span onClick={showaddress} className="p-3 address-span">Addresses</span>
         </button>
@@ -358,9 +367,8 @@ const deleteAddress = async (_id) => {
                   onChange={(e)=>setFormData((pre)=>({...pre,[e.target.name]:e.target.value}))}
                   value={edit ? formData.phone : user?.phone || ""}   />
               </p>
-              <p><strong>Address:</strong> {userData.address}</p>
               {
-              edit?<button onClick={saveform}>save</button>:""
+              edit?<button className="w-40 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700" onClick={saveform}>save</button>:""
               }
             </div>
           </section>

@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams,Link } from 'react-router-dom';
 import APIURL from '../path';
+import Nav from "./nav"
 
 
 const ProductDetail = () => {
@@ -71,12 +72,13 @@ const ProductDetail = () => {
 
 
   return (
-    <div className="max-w-7xl mx-auto px-4">
+    <>
+    <Nav>
+      </Nav>
+    <div className="max-w-7xl pt-18 mx-auto px-4">
       {/* Top Banner */}
       <div className="bg-black text-white text-center py-2 -mx-4">
-        <p>Summer Sale And Free Express Delivery - Off 50%! 
-          <span className="ml-2 underline cursor-pointer">ShopNow</span>
-        </p>
+
       </div>
 
       {/* Navigation */}
@@ -148,7 +150,7 @@ const ProductDetail = () => {
           <h1 className="text-2xl font-semibold mb-2">{singleprod.name}</h1>
           <div className="flex items-center gap-2 mb-4">
             <div className="flex text-yellow-400">{'★'.repeat(4)}{'☆'.repeat(1)}</div>
-            <span className="text-gray-500">({singleprod.reviews||"0"})</span>
+            <span className="text-gray-500">({singleprod.stock})</span>
             <span className="text-green-500">{
               singleprod.quantity==0?"out of stock":
               "| In Stock:"}
@@ -158,16 +160,6 @@ const ProductDetail = () => {
           <p className="text-gray-600 mb-6">
           {singleprod.description}
           </p>
-
-          {/* Colors */}
-          {/* <div className="mb-6">
-            <h3 className="font-semibold mb-2">Colours:</h3>
-            <div className="flex gap-2">
-              <button className="w-8 h-8 rounded-full bg-gray-200"></button>
-              <button className="w-8 h-8 rounded-full bg-red-400"></button>
-            </div>
-          </div> */}
-
           {/* Size */}
           <div className="mb-6">
             <h3 className="font-semibold mb-2">Size:</h3>
@@ -176,7 +168,7 @@ const ProductDetail = () => {
                 singleprod.sizes.map((size) => (
                   <button
                     key={size}
-                    className={`px-4 py-2 border rounded ${size === 'M' ? 'bg-red-500 text-white' : ''}`}
+                    className={`px-4 py-2 border rounded ${size === '8' ? 'bg-red-500 text-white' : ''}`}
                   >
                     {size}   
                   </button>
@@ -190,13 +182,6 @@ const ProductDetail = () => {
           {/* Quantity and Actions */}
           <div className="flex gap-4 items-center mb-6">
             <div className="flex items-center border rounded">
-              {/* <button 
-                className="px-4 py-2"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              >
-                -
-              </button> */}
-              {/* <span className="px-4">{quantity}</span> */}
               {cart? <button 
               className="px-4 py-2"
               onClick={() => addtocart(singleprod._id)}
@@ -241,41 +226,10 @@ const ProductDetail = () => {
       </div>
 
       {/* Related Items */}
-      {/* <div className="my-12">
-        <h2 className="text-red-500 font-semibold mb-6">Related Item</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {relatedProducts.map(product => (
-            <div key={product.id} className="group relative">
-              <div className="relative">
-                {product.discount && (
-                  <span className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-sm rounded">
-                    {product.discount}
-                  </span>
-                )}
-                <img src={product.image} alt={product.name} className="w-full rounded-lg" />
-                <button className="absolute top-2 right-2 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                  ❤️
-                </button>
-                <button className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 opacity-0 group-hover:opacity-90 transition-opacity">
-                  Add To Cart
-                </button>
-              </div>
-              <div className="mt-4">
-                <h3 className="font-semibold">{product.name}</h3>
-                <div className="flex gap-2 text-red-500">
-                  <span>${product.price}</span>
-                  <span className="text-gray-400 line-through">${product.oldPrice}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex text-yellow-400">{'★'.repeat(Math.floor(product.rating))}</div>
-                  <span className="text-gray-500">({product.reviews})</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
+      
     </div>
+    </>
+      
   );
 };
 

@@ -1,7 +1,7 @@
 import "../css/index.css"
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Store, Filter, X, Search, ShoppingCart, User, LogOut, Settings, Heart } from 'lucide-react';
+import { Menu, Store, Filter, X, Search, ShoppingCart, User, LogOut, Settings, Heart,ShoppingBag, Package, ClipboardList } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from "axios";
 import APIURL from "../path";
@@ -240,7 +240,9 @@ export default function Navbar() {
               </button>
               
               <button className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
-                <Store className="h-5 w-5 text-gray-600" />
+                <Link to={"/orderpage"}>
+                  <ShoppingBag size={24} />
+                </Link>
               </button>
               
               {/* Profile Menu */}
@@ -398,16 +400,13 @@ export default function Navbar() {
                 
                 {/* Mobile Profile Menu */}
                 <div className="px-3 pt-4 border-t">
-                  {profileMenuItems.map((item) => (
                     <Link
-                      key={item.name}
-                      to={item.link}
+                      to={"/userprofile"}
                       className="flex items-center px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors duration-200"
                     >
-                      <item.icon className="h-4 w-4 mr-3" />
-                      <span>{item.name}</span>
+                      <User className="h-4 w-4 mr-3" />
+                      <span>User profile</span>
                     </Link>
-                  ))}
                   <a 
                     href="#"
                     className="flex items-center px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors duration-200"

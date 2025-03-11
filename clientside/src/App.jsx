@@ -15,6 +15,7 @@ import CartPage from "./components/productpage/cart";
 import WishlistPage from "./components/productpage/wishlist";
 import AdminPanel from "./components/admin/adminPage";
 import { MessageProvider } from "./components/context";
+import OrderedProducts from "./components/productpage/orderpage";
 
 function App() {
   const [useremail, setUseremail] = useState("");
@@ -38,6 +39,7 @@ function App() {
           <Route path="/productview/:_id" element={<ProductDetail />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/wishlist/:category" element={<WishlistPage />} />
+          <Route path="/orderpage" element={<OrderedProducts />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLogin />} />

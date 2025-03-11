@@ -38,7 +38,8 @@ router.route("/removecart").post(rh.removecart)
 router.route("/filter").post(rh.filter)
 
 // order section
-router.route("/buyprodct").post(rh.buyproduct)
+router.route("/buyproduct").post(rh.buyproduct)
+router.route("/orders").post(rh.orderdetails)
 
 
 // adminn Section

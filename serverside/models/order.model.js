@@ -5,10 +5,10 @@ const orderSchema = new mongoose.Schema({
     name: { type: String, },
     email: { type: String,  },
     phone: { type: Number,  },
-    // address: { type: String, required: true },
+    address: { type: Object, required: true },
     products: [{ type: Object, required: true }],  
-    orderDate: { type: Date, default: Date.now }   
+    orderDate: { type: Date, default: Date.now },
+    estimateDate: { type: Date, }   
 });
 
-// ✅ Fix Mongoose model export
 export default mongoose.models.Order || mongoose.model("Order", orderSchema);
