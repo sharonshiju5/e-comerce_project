@@ -323,7 +323,7 @@ export async function deleteaddress(req,res) {
 export async function addProduct(req, res) {
     try {
 
-        const { userId, name, brand, category, price, stock, sizes, images, material, description,block=true } = req.body;
+        const { userId, name, brand, category, price, stock, sizes, images, material, description,block=false } = req.body;
 
         if (!userId) {
             return res.status(400).send({ msg: "User ID is required" });
