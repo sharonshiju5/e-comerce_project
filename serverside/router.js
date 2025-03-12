@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as rh from "./requesthandler/user.request.js"
 import * as ad from "./requesthandler/admin.request.js"
+import * as or from "./requesthandler/order.request.js"
 import Auth from "./middilware/auth.js";
 
 
@@ -38,8 +39,8 @@ router.route("/removecart").post(rh.removecart)
 router.route("/filter").post(rh.filter)
 
 // order section
-router.route("/buyproduct").post(rh.buyproduct)
-router.route("/orders").post(rh.orderdetails)
+router.route("/buyproduct").post(or.buyproduct)
+router.route("/orders").post(or.orderdetails)
 
 
 // adminn Section

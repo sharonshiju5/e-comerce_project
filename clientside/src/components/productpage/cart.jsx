@@ -78,7 +78,7 @@ const CartPage = () => {
     }, []);
   
 
-  async function ordertheproduct(product) {
+  async function ordertheproduct() {
     setLoading(true)
     try {
       const res = await axios.post(APIURL + "/buyproduct", { product,user_id });
@@ -222,7 +222,7 @@ const CartPage = () => {
                 ₹{(fullprice > 2000 ? fullprice : fullprice + 250).toFixed(2)}
               </span>
             </div>
-            <button onClick={() => ordertheproduct(product)} className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600">
+            <button onClick={() => ordertheproduct()} className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600">
               Order Now
             </button>
           </div>
@@ -286,7 +286,7 @@ const CartPage = () => {
       <div className="border-t border-gray-700 mt-12 pt-6 text-center text-sm text-gray-400">
       </div>
     </div>
-  </footer><ToastContainer></ToastContainer>
+  </footer><ToastContainer/>
   </>
   :(
   <div className='mt-10'>
