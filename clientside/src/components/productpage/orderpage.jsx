@@ -4,6 +4,7 @@ import APIURL from '../path';
 import { motion } from 'framer-motion';
 import Navbar from "../productpage/nav";
 import LoginPrompt from './LoginPrompt';
+import Footer from './footer';
 
 const OrderedProducts = () => {
   const [orders, setOrders] = useState([]);
@@ -281,6 +282,7 @@ const OrderedProducts = () => {
         </div>
       )}
     </motion.div>
+      <Footer/>
     </>
   );
 };

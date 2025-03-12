@@ -14,6 +14,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import APIURL from "../path";
+import Footer from "../productpage/footer";
 
 export default function HomePage({useremail}) {
   
@@ -319,6 +320,8 @@ useEffect(() => {
         </div>
       </div>
     </div>
+
+    <Footer/>
     </div>
     </>
   )

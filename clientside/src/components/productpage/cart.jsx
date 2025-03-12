@@ -8,6 +8,7 @@ import "../css/order.css"
 import { ToastContainer, toast } from 'react-toastify';
 import LoginPrompt from './LoginPrompt';
 import OrderLoadingScreen from './orderprocessing';
+import Footer from './footer';
 
 
 const CartPage = () => {
@@ -232,61 +233,8 @@ const CartPage = () => {
   )}
 
   {/* footer */}
-  <footer className="bg-black text-white mt-auto pt-12 pb-6 relative z-10">
-    <div className="container mx-auto px-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div>
-          <h2 className="text-xl font-bold mb-6">Exclusive</h2>
-          <h3 className="mb-4">Subscribe</h3>
-          <p className="mb-4">Get 10% off your first order</p>
-          <div className="flex border-b border-gray-700 pb-2 mb-4">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="bg-transparent focus:outline-none w-full"
-            />
-            <button>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-bold mb-6">Support</h2>
-          <p className="mb-2">111 Bijoy sarani, Dhaka,</p>
-          <p className="mb-2">DH 1515, Bangladesh.</p>
-          <p className="mb-2">exclusive@gmail.com</p>
-          <p className="mb-2">+88015-88888-9999</p>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-bold mb-6">Account</h2>
-          <ul className="space-y-2">
-            <li><a href="#" className="hover:text-gray-300">My Account</a></li>
-            <li><a href="#" className="hover:text-gray-300">Login / Register</a></li>
-            <li><a href="#" className="hover:text-gray-300">Cart</a></li>
-            <li><a href="#" className="hover:text-gray-300">Wishlist</a></li>
-            <li><a href="#" className="hover:text-gray-300">Shop</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-bold mb-6">Quick Link</h2>
-          <ul className="space-y-2">
-            <li><a href="#" className="hover:text-gray-300">Privacy Policy</a></li>
-            <li><a href="#" className="hover:text-gray-300">Terms Of Use</a></li>
-            <li><a href="#" className="hover:text-gray-300">FAQ</a></li>
-            <li><a href="#" className="hover:text-gray-300">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-t border-gray-700 mt-12 pt-6 text-center text-sm text-gray-400">
-      </div>
-    </div>
-  </footer><ToastContainer/>
+  <Footer/>
+  <ToastContainer/>
   </>
   :(
   <div className='mt-10'>

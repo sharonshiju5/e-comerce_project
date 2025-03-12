@@ -124,15 +124,15 @@ export default function Navbar() {
               </Link>
               
               <Link 
-              // to={`/wishlist/:${""}`}
+              to={"/Allproduct"}
                 className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
                     products
               </Link>
-              <Link
+              <Link to={"/about"}
                 className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
                     about
               </Link>
-              <Link
+              <Link to={"/contact"}
                 className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium">
                     contact
                 </Link>
@@ -421,9 +421,9 @@ export default function Navbar() {
         </div>
         <div className="subnav">
           <div className="nav-filter-div">
-            <button onClick={showfilter} className="p-2 duration-200">
+            {/* <button onClick={showfilter} className="p-2 duration-200">
               <Filter className="filter-icon h-5 w-5 text-gray-600" />
-            </button>
+            </button> */}
           </div>
           <p>Get additional 10% off* on your first purchase. Use Code VHGET10.</p>
           <div className="nav-filter-div">

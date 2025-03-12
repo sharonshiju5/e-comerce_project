@@ -16,6 +16,9 @@ import WishlistPage from "./components/productpage/wishlist";
 import AdminPanel from "./components/admin/adminPage";
 import { MessageProvider } from "./components/context";
 import OrderedProducts from "./components/productpage/orderpage";
+import Allproduct from "./components/productpage/allproducts";
+import AboutComponent from "./components/productpage/aboutpage";
+import ContactComponent from "./components/productpage/contactpage";
 
 function App() {
   const [useremail, setUseremail] = useState("");
@@ -40,7 +43,10 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/wishlist/:category" element={<WishlistPage />} />
           <Route path="/orderpage" element={<OrderedProducts />} />
-
+          <Route path="/Allproduct" element={<Allproduct />} />
+          <Route path="/about" element={<AboutComponent />} />
+          <Route path="/contact" element={<ContactComponent />} />
+          
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/forget" element={<Forgot />} />

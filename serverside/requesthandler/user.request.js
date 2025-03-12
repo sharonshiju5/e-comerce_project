@@ -571,7 +571,6 @@ export async function removecart(req,res) {
         
     } catch (error) {
         console.log(error);
-        
     }
 }
 
@@ -591,7 +590,6 @@ export async function filter(req,res) {
         
     } catch (error) {
         console.log(error);
-        
     }
 }
 
@@ -601,3 +599,147 @@ export async function filter(req,res) {
 // order product
 
 
+export async function contactadmin(req,res) {
+    try {
+        const { formState } = req.body;
+console.log(formState);
+const email = formState.email;
+
+// Send confirmation to user
+const userConfirmation = await transporter.sendMail({
+    from: 'contacte169@gmail.com',
+    to: email, // Send to the user's email
+    subject: "We've Received Your Message",
+    text: "Thank you for contacting us. We'll get back to you shortly.",
+    html: `<div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 5px;">
+              <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+                  <h2 style="color: #333;">Thank You for Contacting Us</h2>
+              </div>
+              <div style="padding: 20px 0;">
+                  <p>Dear ${formState.name},</p>
+                  <p>We have received your message and appreciate you taking the time to contact us.</p>
+                  <p>Here's a summary of the information you provided:</p>
+                  <div style="background-color: #f8f8f8; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                      <p><strong>Subject:</strong> ${formState.subject}</p>
+                      <p><strong>Message:</strong> ${formState.message}</p>
+                  </div>
+                  <p>Our team will review your message and get back to you as soon as possible.</p>
+                  <p>If you need immediate assistance, you can reply directly to this email to reach our support team.</p>
+              </div>
+              <div style="background-color: #f8f8f8; padding: 15px; border-radius: 5px; font-size: 14px; color: #666; text-align: center;">
+                  <p>If you have any urgent questions, please call us at +1 (555) 123-4567.</p>
+              </div>
+          </div>`,
+});
+
+// Send notification to admin with reply functionality
+const adminNotification = await transporter.sendMail({
+    from: 'contacte169@gmail.com',
+    to: "sharonshiju261@gmail.com", // Admin email
+    subject: `New Contact Form Submission: ${formState.subject}`,
+    replyTo: email, // Set reply-to as the user's email for direct response
+    text: `New message from ${formState.name} (${email}): ${formState.message}`,
+    html: `<div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 5px;">
+              <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+                  <h2 style="color: #333;">New Contact Form Submission</h2>
+              </div>
+              <div style="padding: 20px 0;">
+                  <p><strong>From:</strong> ${formState.name} (${email})</p>
+                  <p><strong>Subject:</strong> ${formState.subject}</p>
+                  <p><strong>Message:</strong></p>
+                  <div style="background-color: #f8f8f8; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                      ${formState.message}
+                  </div>
+                  <p>You can reply directly to this email to respond to the user.</p>
+              </div>
+          </div>`,
+});
+
+return res.status(200).send({ msg: "Messages sent successfully" });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getCategories(req, res) {
+    try {
+        const categories = await productSchema.distinct("category"); 
+        res.status(200).json({ msg: "Categories found", categories });
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        res.status(500).json({ msg: "Server error", error: error.message });
+    }
+}
+
+
+export async function filterProducts(req, res) {
+    try {
+        const { selectedCategories, minPrice, maxPrice } = req.body;
+        
+        // Ensure categories is always an array
+       if (req.body) {
+        const categories = Array.isArray(selectedCategories) ? selectedCategories : [selectedCategories];
+        console.log(categories);
+        
+        // Convert price filters to numbers (Ensure valid numbers)
+        const min = minPrice ? parseInt(minPrice, 10) : 0;
+        const max = maxPrice ? parseInt(maxPrice, 10) : Number.MAX_SAFE_INTEGER;
+        
+        console.log("Categories:", categories, "Min Price:", min, "Max Price:", max);
+        
+        // Build the query object
+        const query = { block: false }; // Exclude blocked products
+        
+        // Add category filter - only if categories has items and not empty/null
+        if (categories && categories.length > 0 && categories[0]) {
+            query.category = { $in: categories };
+        }
+        
+        // Add price range filter
+        query.price = { $gte: min, $lte: max };
+        
+        console.log("Query Object:", query);
+        
+        // Execute the query
+        const products = await productSchema.find(query);
+        
+        console.log("Filtered Products:", products);
+        
+        // Check if there are any products after filtering
+        if (products.length === 0) {
+            // Try a broader query to determine if the issue is with the filters
+            const allProducts = await productSchema.find({ block: false });
+            console.log("All unblocked products count:", allProducts.length);
+            
+            // If there are products without filters but none with filters
+            if (allProducts.length > 0) {
+                console.log("No products match the specific filters, but there are unblocked products available");
+            }
+        }
+        
+         return res.status(200).json({
+            success: true,
+            count: products.length,
+            msg: products.length > 0 ? "Filtered products retrieved successfully" : "No products match the selected filters",
+            products,
+        });
+       }
+       else{
+        const products = await productSchema.find();
+
+        return res.status(200).json({
+            success: true,
+            count: products.length,
+            msg: products.length > 0 ? "Filtered products retrieved successfully" : "No products match the selected filters",
+            products,
+        });
+       }
+    } catch (error) {
+        console.error("Error filtering products:", error);
+        res.status(500).json({
+            success: false,
+            msg: "Error filtering products",
+            error: error.message,
+        });
+    }
+}

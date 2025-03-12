@@ -6,12 +6,18 @@ import Auth from "./middilware/auth.js";
 
 
 const router=Router();
+
+// user Selection
+// user Selection
+// user Selection
+
 router.route("/adduser").post(rh.adduser)
 router.route("/login").post(rh.logine)
 router.route("/forgetuser").post(rh.forgetPassword)
 router.route("/chaingeuser").put(rh.chaingePassword)
 router.route("/profiledata").post(rh.profile)
 router.route("/saveprofile").put(rh.saveprofile)
+router.route("/contact").post(rh.contactadmin)
 
 // address
 // address
@@ -37,7 +43,10 @@ router.route("/checkcart").post(rh.checkcart)
 router.route("/showcart").post(rh.showcart)
 router.route("/removecart").post(rh.removecart)
 router.route("/filter").post(rh.filter)
+router.route("/category").get(rh.getCategories)
+router.route("/products/filterd").post(rh.filterProducts)
 
+// order section
 // order section
 router.route("/buyproduct").post(or.buyproduct)
 router.route("/orders").post(or.orderdetails)
