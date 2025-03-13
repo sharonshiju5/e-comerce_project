@@ -1,57 +1,108 @@
-import userSchema from "../models/user.models.js"
-import addresSchema from "../models/addres.model.js"
-import productSchema from "../models/product.model.js"
-import cartSchema from "../models/cart.model.js"
-import orderschema from "../models/order.model.js"
-import nodemailer from "nodemailer"
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
+import userSchema from "../models/user.models.js";
+import productSchema from "../models/product.model.js";
+import cartSchema from "../models/cart.model.js";
+import orderschema from "../models/order.model.js";
+import nodemailer from "nodemailer";
+
+// Initialize Razorpay with your key_id and key_secret
+const razorpay = new Razorpay({
+    key_id: process.env.PAY_KEY_ID|| 'rzp_test_uyJ0fRCB1C8Y7l',
+    key_secret:process.env.PAY_KEY_SECRET || 'AXDVVQqRgkvdoc1Nemn3f0Wd'
+});
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587 ,
-    secure: false, // true for port 465, false for other ports
+    port: 587,
+    secure: false,
     auth: {
         user: "contacte169@gmail.com",
         pass: "ajviyfwmigdwdzxq",
     },
 });
 
-export async function buyproduct(req, res) {
+// Create a Razorpay order
+export async function createRazorpayOrder(req, res) {
     try {
-        const { product, user_id } = req.body;
-        console.log("Received products:", product);
-
-        if (!Array.isArray(product) || product.length === 0 || !user_id) {
-            return res.status(400).send({ msg: "Invalid request format" });
-        }
-
-        // Fetch address
-        const address = await addresSchema.find({ userId: user_id });
-        console.log(address);
+        const { amount, currency = "INR" } = req.body;
         
-        if (!address || address.length === 0) {
-            return res.status(404).send({ msg: "Address not found" });
+        if (!amount) {
+            return res.status(400).json({ msg: "Amount is required" });
         }
 
-        // Fetch user
+        const options = {
+            amount: amount,
+            currency: currency,
+            receipt: `receipt_${Date.now()}`
+        };
+
+        const order = await razorpay.orders.create(options);
+        
+        if (!order) {
+            return res.status(500).json({ msg: "Error creating Razorpay order" });
+        }
+
+        res.status(200).json(order);
+    } catch (error) {
+        console.error("Error in createRazorpayOrder:", error);
+        res.status(500).json({ msg: "Server error", error: error.message });
+    }
+}
+
+// Verify Razorpay payment and process order
+export async function verifyPayment(req, res) {
+    try {
+        const { 
+            razorpayOrderId, 
+            razorpayPaymentId, 
+            razorpaySignature,
+            product,
+            user_id,
+            address 
+        } = req.body;
+
+        // Validate the required fields
+        if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+            return res.status(400).json({ msg: "All payment fields are required" });
+        }
+
+        if (!Array.isArray(product) || product.length === 0 || !user_id || !address) {
+            return res.status(400).json({ msg: "Invalid order data" });
+        }
+
+        // Verify signature
+        const generatedSignature = crypto
+            .createHmac("sha256", process.env.PAY_KEY_SECRET || 'AXDVVQqRgkvdoc1Nemn3f0Wd')
+            .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+            .digest("hex");
+
+        if (generatedSignature !== razorpaySignature) {
+            return res.status(400).json({ msg: "Payment verification failed" });
+        }
+
+        // Get user details
         const user = await userSchema.findById(user_id);
         if (!user) {
-            return res.status(404).send({ msg: "User not found" });
+            return res.status(404).json({ msg: "User not found" });
         }
 
+        // Check products stock
         for (const item of product) {
             const productData = await productSchema.findById(item._id);
 
             if (!productData) {
-                return res.status(400).send({ msg: `Product ${item.name} not found` });
+                return res.status(400).json({ msg: `Product ${item.name} not found` });
             }
 
             const decreaseAmount = item.quantity ? Number(item.quantity) : 1;
 
             if (productData.stock < decreaseAmount) {
-                return res.status(400).send({ msg: `Not enough stock for ${item.name}` });
+                return res.status(400).json({ msg: `Not enough stock for ${item.name}` });
             }
         }
 
+        // Update product stock
         for (const item of product) {
             await productSchema.findByIdAndUpdate(
                 item._id,
@@ -60,6 +111,7 @@ export async function buyproduct(req, res) {
             );
         }
 
+        // Create order
         const orderDate = new Date();
         const estimateDate = new Date(orderDate);
         estimateDate.setDate(orderDate.getDate() + 10);
@@ -71,14 +123,38 @@ export async function buyproduct(req, res) {
             email: user.email,
             phone: user.phone,
             orderDate: orderDate,
-            address: address[0], 
-            estimateDate: estimateDate 
+            address: address,
+            estimateDate: estimateDate,
+            payment: {
+                id: razorpayPaymentId,
+                orderId: razorpayOrderId,
+                status: "completed"
+            }
         });
+
+        // Clear cart
         await cartSchema.deleteMany({ user_id });
-        const email = user.email;
+
+        // Send confirmation email
+        await sendOrderConfirmationEmail(user, product, order, address, estimateDate);
+
+        return res.status(200).json({ 
+            msg: "Payment verified and order created successfully", 
+            order 
+        });
+
+    } catch (error) {
+        console.error("Error in verifyPayment:", error);
+        res.status(500).json({ msg: "Server error", error: error.message });
+    }
+}
+
+// Helper function to send order confirmation email
+async function sendOrderConfirmationEmail(user, product, order, address, estimateDate) {
+    try {
         const info = await transporter.sendMail({
             from: 'contacte169@gmail.com',
-            to: email,
+            to: user.email,
             subject: "Order Confirmation #" + order._id.toString().slice(-6),
             text: "Your order has been confirmed.",
             html: `
@@ -95,6 +171,11 @@ export async function buyproduct(req, res) {
                     <div style="background-color: #f9f9f9; padding: 15px; margin: 20px 0; border-radius: 4px;">
                         <p style="margin: 0; font-weight: bold;">Estimated Delivery Date:</p>
                         <p style="margin: 5px 0 0;">${estimateDate.toDateString()}</p>
+                    </div>
+                    
+                    <div style="background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                        <p style="margin: 0; font-weight: bold; color: #2e7d32;">Payment Status: Successful</p>
+                        <p style="margin: 5px 0 0;">Payment ID: ${order.payment.id}</p>
                     </div>
                 </div>
                 
@@ -124,9 +205,9 @@ export async function buyproduct(req, res) {
                 
                 <div style="padding: 20px 0;">
                     <h3>Shipping Address</h3>
-                    <p style="margin: 5px 0;">${address[0].name || user.fname}</p>
-                    <p style="margin: 5px 0;">${address[0].street}, ${address[0].city}</p>
-                    <p style="margin: 5px 0;">${address[0].state}, ${address[0].city} - ${address[0].pincode}</p>
+                    <p style="margin: 5px 0;">${address.name || user.fname}</p>
+                    <p style="margin: 5px 0;">${address.address}</p>
+                    <p style="margin: 5px 0;">Pincode: ${address.pincode}</p>
                     <p style="margin: 5px 0;">Phone: ${user.phone}</p>
                 </div>
                 
@@ -140,16 +221,13 @@ export async function buyproduct(req, res) {
             </div>
             `
         });
-
-        return res.status(200).send({ msg: "Order successful", order });
-
+        
+        return info;
     } catch (error) {
-        console.error("❌ Error in buyproduct:", error);
-        return res.status(500).send({ msg: "net work issue", error: error.message });
+        console.error("Error sending email:", error);
+        // Don't throw, just log the error
     }
 }
-
-
 
 export async function orderdetails(req,res) {
     try {

@@ -49,6 +49,8 @@ const RegisterPage = () => {
   };
 
   const [errorMsg, setErrorMsg] = useState("");
+  const [emailerrorMsg, setemailErrorMsg] = useState("");
+  const[phoneerrorMsg,setphoneerrorMsg]=useState("")
   const [disable, setDisable] = useState(true);
 
   const validatePassword = (password) => {
@@ -75,13 +77,54 @@ const RegisterPage = () => {
     setDisable(false);
     return "";
   };
+
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+        setDisable(true);
+        return "Email is required.";
+    }
+    if (!emailRegex.test(email)) {
+        setDisable(true);
+        return "Invalid email format.";
+    }
+    
+    setDisable(false);
+    return "";
+};
+
+const validateIndianPhone = (phone) => {
+  const phoneRegex = /^[6789]\d{9}$/;
+
+  if (!phone) {
+      setDisable(true);
+      return "Phone number is required.";
+  }
+  if (!phoneRegex.test(phone)) {
+      setDisable(true);
+      return "Invalid phone number format.";
+  }
   
+  setDisable(false);
+  return "";
+};
+
 
   const setForm = async (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
     setPasswordStrength(formData.password.length)
+    if (name==="email") {
+      const error = validateEmail(value);
+      setemailErrorMsg(error)
+    }
+    if (name === "phone") {
+      const error = validateIndianPhone(value);
+      setphoneerrorMsg(error);
+    }
     if (name === "password") {
       const error = validatePassword(value);
       setErrorMsg(error);
@@ -224,18 +267,22 @@ const RegisterPage = () => {
 
                   required
                 />
+                  {emailerrorMsg && <p className="text-red-500 text-sm">{emailerrorMsg}</p>}
+
               </div>
 
               <div className="relative transform transition-all duration-200 scale-100 hover:scale-[1.02]">
                 <Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200`} size={18} />
                 <input
-                  type="tel"
+                  type="number"
                   name='phone'
                   onChange={setForm}
                   placeholder="Phone Number"
                   className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-transparent placeholder-gray-400 text-gray-600 transition-all duration-200 hover:bg-orange-50/30"
                   required
                 />
+                  {phoneerrorMsg && <p className="text-red-500 text-sm">{phoneerrorMsg}</p>}
+
               </div>
               {formData.account === "buyer" ? "" : (
                 <>
@@ -259,7 +306,7 @@ const RegisterPage = () => {
                       <line x1="12" y1="18" x2="12" y2="18.01"></line>
                     </svg>
                     <input
-                      type="tel"
+                      type="text"
                       name="company"
                       onChange={setForm}
                       placeholder="company name"
@@ -312,10 +359,11 @@ const RegisterPage = () => {
                   required
                 />
                 <button
-          type="button"
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
-          onClick={showpass}
-            > {pass?<Eye size={20} className="text-gray-500" />:<EyeOff size={20} className="text-gray-500" />}</button>
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                onClick={showpass}>
+                  {pass?<Eye size={20} className="text-gray-500" />:<EyeOff size={20} className="text-gray-500" />}
+                </button>
                 <div className="mt-1 flex gap-1">
                   {[...Array(6)].map((_, i) => (
                     <div
@@ -348,7 +396,7 @@ const RegisterPage = () => {
               </div>
             </div>
           </div>
-            {disable ? " ":
+            {disable ? <p>complete the validation </p>:
           <button
           type="submit"
           className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 transform hover:translate-y-[-2px] transition-all duration-200 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 active:scale-95"

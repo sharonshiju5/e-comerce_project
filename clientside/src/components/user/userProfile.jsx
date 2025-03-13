@@ -1,5 +1,4 @@
 import React, { useEffect, useContext,useState } from "react";
-
 import {  Package,  MapPin, Plus, Edit2 } from "lucide-react";
 import { ToastContainer, toast } from 'react-toastify';
 import "../css/index.css"
@@ -199,7 +198,7 @@ const [addresses, setAddresses] = useState([]);
 const showaddress = async () => {
   try {
       const res = await axios.post(APIURL + "/showaddress", addresformData);
-      // console.log("Full API Response:", res.data); 
+      console.log("Full API Response:", addresformData); 
     const{msg}=res.data
       if (res.data.address && Array.isArray(res.data.address)) {
           setAddresses(res.data.address); 

@@ -32,7 +32,7 @@ router.route("/deleteaddress").post(rh.deleteaddress)
 
 router.route("/addproduct").post(rh.addProduct)
 router.route("/fetchproduct").post(rh.fetchProduct)
-router.route("/deleteproduct").post(Auth,rh.deleteproduct)
+router.route("/deleteproduct").post(rh.deleteproduct)
 router.route("/showproduct").post(rh.showproduct)
 router.route("/updateproduct").post(rh.updateproduct)
 router.route("/addoffer").post(rh.addoffer)
@@ -48,7 +48,8 @@ router.route("/products/filterd").post(rh.filterProducts)
 
 // order section
 // order section
-router.route("/buyproduct").post(or.buyproduct)
+router.route("/create-razorpay-order").post(or.createRazorpayOrder)
+router.route("/verify-payment").post(or.verifyPayment)
 router.route("/orders").post(or.orderdetails)
 
 

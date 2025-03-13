@@ -289,7 +289,9 @@ export async function showaddress(req,res) {
         
         const address = await addresSchema.find({userId});
         console.log(address);
-        
+        if (address.length === 0) {
+            return res.status(404).json({ message: "No addresses found for this user" });
+        }
         return res.status(200).send({address});
         
     } catch (error) {
@@ -381,7 +383,9 @@ export async function fetchProduct(req,res) {
 export async function deleteproduct(req,res) {
     try {
         const{productId}=req.body
-        const product = await productSchema.findOneAndDelete({productId}); 
+        console.log("prodid is"+productId);
+        
+        const product = await productSchema.findByIdAndDelete(productId);
         // console.log(product);
         return res.status(201).send({ msg: "Successfully deleted", });
         

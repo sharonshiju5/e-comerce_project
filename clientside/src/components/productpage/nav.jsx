@@ -102,6 +102,95 @@ export default function Navbar() {
   function Home() {
     useNavigate("/")
   }
+
+
+  const [gradientPosition, setGradientPosition] = useState(0);
+  
+  // Animate gradient continuously
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGradientPosition((prev) => (prev + 1) % 100);
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Animation variants
+  const menuVariants = {
+    hidden: { 
+      opacity: 0,
+      scale: 0.95,
+      y: -10,
+      transformOrigin: "top right",
+      boxShadow: "0px 0px 0px rgba(0,0,0,0.1)"
+    },
+    visible: { 
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      boxShadow: "0px 10px 25px rgba(0,0,0,0.2)",
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut",
+        staggerChildren: 0.08,
+        boxShadow: { delay: 0.1, duration: 0.4 }
+      }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: -10,
+      boxShadow: "0px 0px 0px rgba(0,0,0,0.1)",
+      transition: { 
+        duration: 0.2,
+        ease: "easeIn",
+        staggerChildren: 0.05,
+        staggerDirection: -1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20, height: 0 },
+    visible: { 
+      opacity: 1, 
+      x: 0, 
+      height: "auto",
+      transition: { 
+        opacity: { duration: 0.2 },
+        x: { type: "spring", stiffness: 200, damping: 15 },
+        height: { duration: 0.3 }
+      }
+    },
+    exit: { 
+      opacity: 0,
+      x: -20,
+      transition: { duration: 0.2 }
+    }
+  };
+
+  const iconVariants = {
+    hidden: { scale: 0.8, rotate: -10 },
+    visible: { scale: 1, rotate: 0 },
+    hover: { 
+      scale: 1.2,
+      rotate: 5,
+      transition: { 
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    }
+  };
+  
+  const gradientStyle = {
+    background: `linear-gradient(
+      ${gradientPosition * 3.6}deg,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(240, 240, 255, 0.9) 50%,
+      rgba(230, 230, 255, 0.8) 100%
+    )`
+  };
+
   return (
     <>
       <nav className="bg-white shadow-sm" >
@@ -253,27 +342,145 @@ export default function Navbar() {
                 >
                   <User className="h-5 w-5 text-gray-600" />
                 </button>
-        
+            
                 {/* Dropdown Menu */}
-                {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                      <Link
-                        to={"/userprofile"}
-                        className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200
-                           `}
-                      >
-                        <User className="h-4 w-4 mr-3" />
-                        <span>userprofile</span>
-                      </Link>
-                    <a
-                      href="#"
-                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            
+                <AnimatePresence>
+                  {showProfileMenu && (
+                    <motion.div 
+                      className="absolute right-0 mt-2 w-48 rounded-lg overflow-hidden z-50 backdrop-blur-sm"
+                      variants={menuVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      style={gradientStyle}
                     >
-                      <LogOut className="h-4 w-4 mr-3" />
-                      <span onClick={logout}>LogOut</span>
-                    </a>
-                  </div>
-                )}
+                      <motion.div 
+                        className="w-full h-1 bg-gradient-to-r from-blue-400 to-purple-500"
+                        animate={{ 
+                          backgroundPosition: [`0% 0%`, `100% 100%`],
+                        }}
+                        transition={{ 
+                          repeat: Infinity,
+                          repeatType: "mirror",
+                          duration: 2,
+                          ease: "linear"
+                        }}
+                      />
+                      
+                      <div className="py-2">
+                        <motion.div variants={itemVariants}>
+                          <Link
+                            to="/userprofile"
+                            className="block px-4 py-2"
+                          >
+                            <motion.div 
+                              className="flex items-center w-full rounded-md p-2 relative overflow-hidden"
+                              whileHover={{ 
+                                backgroundColor: "rgba(240, 240, 255, 0.6)",
+                                x: 5,
+                                transition: { duration: 0.2 }
+                              }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-500/20 opacity-0"
+                                whileHover={{ opacity: 1 }}
+                              />
+                              
+                              <motion.div
+                                variants={iconVariants}
+                                initial="hidden"
+                                animate="visible"
+                                whileHover="hover"
+                                className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-full text-white mr-3"
+                              >
+                                <User className="h-4 w-4" />
+                              </motion.div>
+                              
+                              <motion.span 
+                                className="text-gray-700 font-medium"
+                                whileHover={{ 
+                                  color: "#4f46e5",
+                                  x: 3,
+                                  transition: { duration: 0.2 }
+                                }}
+                              >
+                                User Profile
+                              </motion.span>
+                            </motion.div>
+                          </Link>
+                        </motion.div>
+                              
+                        <motion.div 
+                          className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-1"
+                          animate={{ opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        
+                        <motion.div variants={itemVariants}>
+                          <a
+                            href="#"
+                            className="block px-4 py-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              logout();
+                            }}
+                          >
+                            <motion.div 
+                              className="flex items-center w-full rounded-md p-2 relative overflow-hidden"
+                              whileHover={{ 
+                                backgroundColor: "rgba(255, 240, 240, 0.6)",
+                                x: 5,
+                                transition: { duration: 0.2 }
+                              }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-500/20 opacity-0"
+                                whileHover={{ opacity: 1 }}
+                              />
+                              
+                              <motion.div
+                                variants={iconVariants}
+                                initial="hidden"
+                                animate="visible"
+                                whileHover="hover"
+                                className="bg-gradient-to-br from-red-500 to-orange-600 p-2 rounded-full text-white mr-3"
+                              >
+                                <LogOut className="h-4 w-4" />
+                              </motion.div>
+                              
+                              <motion.span 
+                                className="text-gray-700 font-medium"
+                                whileHover={{ 
+                                  color: "#e11d48",
+                                  x: 3,
+                                  transition: { duration: 0.2 }
+                                }}
+                              >
+                                Logout
+                              </motion.span>
+                            </motion.div>
+                          </a>
+                        </motion.div>
+                      </div>
+                              
+                      <motion.div
+                        className="h-1 w-full bg-gradient-to-r from-purple-500 to-blue-400"
+                        animate={{ 
+                          backgroundPosition: [`100% 100%`, `0% 0%`],
+                        }}
+                        transition={{ 
+                          repeat: Infinity,
+                          repeatType: "mirror",
+                          duration: 2,
+                          ease: "linear"
+                        }}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 

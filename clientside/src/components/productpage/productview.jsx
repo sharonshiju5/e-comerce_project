@@ -5,6 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import Editproduct from "./editproduct";
 import { Tag } from 'lucide-react';
 import sound from "../../assets/sound.mp3"
+import  "../css/sellerproduct.css";
+import { motion } from "framer-motion";
 const SellerProducts = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,33 +14,36 @@ const SellerProducts = () => {
     const [show, setShow] = useState(true);
     const [productid, setProductid] = useState("");
     const[block,setblock]=useState(true)
+    const [isOpen, setIsOpen] = useState(false);
     const userId = localStorage.getItem("userId"); 
     
 
-    useEffect(() => {
-        if (!userId) {
-            setError("Seller ID not found. Please log in.");
-            setLoading(false);
-            return;
-        }
+    if (!userId) {
+      setError("Seller ID not found. Please log in.");
+      setLoading(false);
+      return;
+    }
         async function fetchproduct() {
-            try {
+          try {
                 const res = await axios.post(APIURL + "/fetchproduct", {userId})
                 console.log(res);
                 const {products}=res.data
                 console.log(products);
                 setProducts(products)
-            } catch (error) {
+              } catch (error) {
                 
+              }
             }
-        }
+    useEffect(() => {
         fetchproduct()
     }, [userId,block]);
 
 
     async function deleteProduct(productId) {
         try {
-            const res = await axios.post(APIURL + "/deleteproduct", productId)
+          setIsOpen(false);
+          
+            const res = await axios.post(APIURL + "/deleteproduct", {productId})
             const{msg}=res.data
             console.log(res);
             console.log(msg);
@@ -56,8 +61,8 @@ const SellerProducts = () => {
                 theme: "light",
                 });
                 setTimeout(() => {
-                  fetchProduct()
-                }, 2500);
+                  fetchproduct()
+                }, 1500);
             }
             
         } catch (error) {
@@ -113,6 +118,7 @@ const SellerProducts = () => {
             console.log(error);
         }
     }
+
     return (
       <div className="p-2 w-full">
       <h2 className="text-xl font-semibold mb-4">Your Products</h2>
@@ -206,11 +212,12 @@ const SellerProducts = () => {
                 </button>
               </a>
             
-              <button
-                onClick={() => deleteProduct(product._id)}
-                className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-4 rounded-lg transition duration-300 flex items-center"
-              >
-                <svg
+              
+                <div className="flex justify-center items-center">
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-4 rounded-lg transition duration-300 flex items-center"
+                    onClick={() => setIsOpen(true)}
+                  ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-3 w-3 md:h-4 md:w-4 mr-1"
                   viewBox="0 0 20 20"
@@ -222,8 +229,57 @@ const SellerProducts = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                Delete
-              </button>
+                    Delete
+                  </button>
+
+                  {isOpen && (
+                    <motion.div
+                      className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <motion.div
+                        className="bg-white p-6 rounded-lg shadow-lg text-center w-80"
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0.8 }}
+                      >
+                        <h2 className="text-xl font-bold mb-2">Confirm Deletion</h2>
+                        <p className="text-gray-700 mb-4">
+                          Are you sure you want to delete <strong>{product.name}</strong>?
+                        </p>
+                  
+                        <div className="flex justify-between">
+                          <button
+                            className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 transition-all"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product._id)}
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-4 rounded-lg transition duration-300 flex items-center"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-3 w-3 md:h-4 md:w-4 mr-1"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            Delete
+                            </button>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </div>
             </div>
           </div>
         ))}

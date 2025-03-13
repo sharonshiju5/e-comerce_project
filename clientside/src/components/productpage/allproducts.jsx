@@ -98,7 +98,7 @@ const Allproduct = () => {
 
 
 //   console.log(categories);
-  
+
   async function getcategory() {
     try {
         const res=await axios.get(APIURL+"/category ")
@@ -106,6 +106,7 @@ const Allproduct = () => {
             const{categories}=res.data
             setcategories(categories)
         }
+          
         // console.log(res);
         
     } catch (error) {

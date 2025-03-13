@@ -74,7 +74,7 @@ const OrderedProducts = () => {
     
       <Navbar/>
       {userId?(
-      <div className="container mx-auto p-4 max-w-5xl">
+      <div className="container mx-auto  p-4 max-w-5xl">
         <h2 className="text-3xl font-bold mb-8 text-gray-800">Your Orders</h2>
         
         {orders.length === 0 ? (
@@ -92,7 +92,7 @@ const OrderedProducts = () => {
             </button>
           </motion.div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-auto h-120">
             {orders.map((order, index) => (
               <motion.div 
                 key={order._id}
@@ -282,7 +282,9 @@ const OrderedProducts = () => {
         </div>
       )}
     </motion.div>
+    <div>
       <Footer/>
+    </div>
     </>
   );
 };

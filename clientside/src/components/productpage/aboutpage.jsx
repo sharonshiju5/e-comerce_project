@@ -22,7 +22,7 @@ const AboutPage = () => {
     { value: "200+", label: "Products", icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg> },
     { value: "12", label: "Countries Served", icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
   ];
-  
+
   // Team members
   const emp = [
     {
@@ -266,9 +266,13 @@ const AboutPage = () => {
                   Shop Now
                 </button>
             </Link>
+
+            <Link to={"/contact"}>
             <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-md font-medium transition-all duration-300 hover:bg-white/10 hover:shadow-lg hover:scale-105">
               Contact Us
             </button>
+            </Link>
+
           </div>
         </div>
       </div>
