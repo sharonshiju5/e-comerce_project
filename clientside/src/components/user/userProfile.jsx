@@ -50,10 +50,9 @@ const ProfilePage = () => {
   const [user, setUser] = useState({});
 
   useEffect(()=>{
-
     const profile =async (e) => {
       try {
- 
+        
         const res = await axios.post(APIURL+"/profiledata", formData);
         const{user}=res.data
         setUser(user[0])
@@ -67,7 +66,7 @@ const ProfilePage = () => {
           window.location.reload()
         }
         // console.log(user[0].fname);
-
+        
       } catch (error) {
         console.log(error);
         
@@ -268,6 +267,12 @@ const deleteAddress = async (_id) => {
       console.error("Axios error:", error.response?.data || error.message);
   }
 };
+function logout() {
+  localStorage.removeItem("email");
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  window.location.reload()
+}
 
   return (
     <>
@@ -281,7 +286,7 @@ const deleteAddress = async (_id) => {
       <aside className="w-1/5 bg-white p-5 shadow-md flex flex-col space-y-3">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-16 h-16 bg-gray-300 rounded-full">
-
+            <img src="https://cdn-icons-png.flaticon.com/128/428/428933.png" alt="" />
           </div>
           <div>
             <h2 className="text-xl font-semibold">{user?.fname || ""}</h2>
@@ -312,7 +317,7 @@ const deleteAddress = async (_id) => {
            <span>add Products</span>
         </button></>
        ) }
-        <button className="mt-auto p-3 rounded-md flex items-center space-x-2 text-red-600 hover:bg-red-100">
+        <button onClick={logout} className="mt-auto p-3 rounded-md flex items-center space-x-2 text-red-600 hover:bg-red-100">
           <LogOut /> <span>Logout</span>
         </button>
       </aside>

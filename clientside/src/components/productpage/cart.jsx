@@ -61,10 +61,22 @@ const CartPage = () => {
       try {
         const res = await axios.post(APIURL + "/showcart", { user_id });
         console.log(res);
+    
         if (res.status === 200) {
-          setProducts(res.data);
-          // Calculate total when products are loaded
-          calculateTotal(res.data);
+          const { cartItems, products } = res.data;
+    
+          // Update products to only contain the selected size
+          const updatedProducts = products.map(product => {
+            const cartItem = cartItems.find(item => item.product_id === product._id);
+            return {
+              ...product,
+              selectedSize: cartItem ? cartItem.size : null, // Store the selected size
+              sizes: cartItem ? [cartItem.size] : [], // Replace sizes array with only the selected size
+            };
+          });
+    
+          setProducts(updatedProducts);
+          calculateTotal(updatedProducts);
         } else {
           setProducts([]);
           setFullprice(0);
@@ -75,8 +87,11 @@ const CartPage = () => {
         setFullprice(0);
       }
     }
+    
+    
     showsingleproduct();
   }, [user_id, ordersucces]);
+console.log(product);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -181,6 +196,16 @@ const CartPage = () => {
       }
     } catch (error) {
       console.log(error);
+      toast.error("address not found" || error.message, {
+        position: "top-right",
+        autoClose: 1200,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   }
 
@@ -210,7 +235,7 @@ const CartPage = () => {
                       <tr className="border-b">
                         <th className="py-4 text-left">Product</th>
                         <th className="py-4 text-left">Price</th>
-                        <th className="py-4 text-left">Quantity</th>
+                        <th className="py-4 text-left">size</th>
                         <th className="py-4 text-left">Subtotal</th>
                       </tr>
                     </thead>
@@ -228,7 +253,16 @@ const CartPage = () => {
                               <span>{item.name}</span>
                             </div>
                           </td>
+                                              
                           <td className="py-6">₹{item.price}</td>
+                                              
+                          {/* Added Size Column */}
+                          <td className="py-6">
+                            <span className="px-3 py-1 border rounded bg-gray-100 text-sm">
+                              {item.selectedSize || (item.sizes && item.sizes[0]) || "N/A"}
+                            </span>
+                          </td>
+                                              
                           <td className="py-6">
                             <div className="flex items-center border rounded-md w-24">
                               <input 
@@ -257,8 +291,10 @@ const CartPage = () => {
                               </div>
                             </div>
                           </td>
+                                              
                           <td className="py-6">₹{item.price * (item.quantity || 1)}</td>
                         </tr>
+
                       ))}
                     </tbody>
                   </table>
@@ -284,7 +320,7 @@ const CartPage = () => {
                         </div>
                         <div className="flex justify-between">
                           <span>Shipping:</span>
-                          <span>{fullprice > 2000 ? "Free shipping (Yoou saved 250 on this order" : "₹250"}</span>
+                          <span>{fullprice > 2000 ? "Free shipping (Yoou saved 250 on this order" : product.length==0?"₹0":"₹250"}</span>
                         </div>
                       </div>
                       <div className="flex justify-between py-4">
@@ -293,13 +329,22 @@ const CartPage = () => {
                           ₹{(fullprice > 2000 ? fullprice : fullprice + 250).toFixed(2)}
                         </span>
                       </div>
+                      {product.length === 0?
+                      <Link to={"/"}>
+                        <button 
+                          onClick={showaddress} 
+                          className="w-full bg-black text-white py-3 rounded ">
+                         pleace add product to order 
+                        </button>
+                      </Link>
+                      :
                       <button 
-                        onClick={showaddress} 
-                        className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600"
-                        disabled={product.length === 0}
+                      onClick={showaddress} 
+                      className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600"
                       >
                         Proceed to Checkout
                       </button>
+                      }
                     </div>
                   </div>
                 </div>

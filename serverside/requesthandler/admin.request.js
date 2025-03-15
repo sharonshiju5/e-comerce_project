@@ -156,7 +156,13 @@ export async function blockuser(req,res) {
     const _id=userId
     console.log(userId);
     const users=await userSchema.findByIdAndUpdate(_id,[{$set:{block:{$not:"$block"}}}],{new:true});
-    res.status(201).send({msg:"suceesfully updated",users})
+    const seller=await userSchema.findById(_id)
+    const prod = await productSchema.updateMany(
+      { sellerId: seller.sellerId }, // Find products by sellerId
+      [{ $set: { sellerblock: { $not: ["$sellerblock"] } } }] // Toggle sellerblock
+  );
+  
+      res.status(201).send({msg:"suceesfully updated",users})
     console.log(users);
     
   } catch (error) {

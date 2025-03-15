@@ -15,6 +15,7 @@ const SellerProducts = () => {
     const [productid, setProductid] = useState("");
     const[block,setblock]=useState(true)
     const [isOpen, setIsOpen] = useState(false);
+    const[deltproduct,setdeltproduct]=useState()
     const userId = localStorage.getItem("userId"); 
     
 
@@ -39,7 +40,10 @@ const SellerProducts = () => {
     }, [userId,block]);
 
 
-    async function deleteProduct(productId) {
+    async function deleteProduct() {
+      const productId=deltproduct
+      console.log(productId);
+      
         try {
           setIsOpen(false);
           
@@ -216,7 +220,7 @@ const SellerProducts = () => {
                 <div className="flex justify-center items-center">
                   <button
                     className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-4 rounded-lg transition duration-300 flex items-center"
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => {setIsOpen(true);setdeltproduct(product._id)}}
                   ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-3 w-3 md:h-4 md:w-4 mr-1"
@@ -258,7 +262,7 @@ const SellerProducts = () => {
                             Cancel
                           </button>
                           <button
-                            onClick={() => deleteProduct(product._id)}
+                            onClick={() => deleteProduct()}
                             className="bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-medium py-1 md:py-1.5 px-2 md:px-4 rounded-lg transition duration-300 flex items-center"
                           >
                             <svg

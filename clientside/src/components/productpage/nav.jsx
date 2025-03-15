@@ -22,7 +22,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [search, setSearch] = useState("");
-
+  const [user, setUser] = useState({});
+  
   const navLinks = [
     { name: 'Home', href: '#' },
     { name: 'Products', href: '#' },
@@ -48,9 +49,40 @@ export default function Navbar() {
   function showinput() {
     setInput(!input);
   }
-
-  const user_id = localStorage.getItem("userId");
+  const email=localStorage.getItem("email")
   
+  
+  const user_id = localStorage.getItem("userId");
+  useEffect(()=>{
+    const profile =async (e) => {
+      try {
+        
+        const res = await axios.post(APIURL+"/profiledata", {email});
+        const{user}=res.data
+        console.log(res);
+        
+        setUser(user[0])
+        // setFetched(true); 
+        console.log(user);
+        if (user[0].block===true) {
+          localStorage.removeItem("token")
+          localStorage.removeItem("userId")
+          localStorage.removeItem("email")
+          alert("you have been blocked by the admin")
+          window.location.reload()
+        }
+        // console.log(user[0].fname);
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+    // if (!fetched) {
+      profile();
+    // }
+  }, [token]);
+
   function logout() {
     localStorage.removeItem("email");
     localStorage.removeItem("token");
@@ -114,7 +146,6 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Animation variants
   const menuVariants = {
     hidden: { 
       opacity: 0,
@@ -270,6 +301,7 @@ export default function Navbar() {
                                   delay: index * 0.05
                                 }}
                                 whileHover={{ backgroundColor: "#F3F4F6" }}
+                                onClick={()=>viewProdct(item._id)}
                               >
                                 {item.images && (
                                   <img 
@@ -283,7 +315,7 @@ export default function Navbar() {
                                   />
                                 )}
                                 <div>
-                                  <span className="font-medium block" onClick={()=>viewProdct(item._id)}>{item.name}</span>
+                                  <span className="font-medium block" >{item.name}</span>
                                 </div>
                               </motion.li>
                             ))

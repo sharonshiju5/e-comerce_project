@@ -189,9 +189,9 @@ const AdminPanel = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Join Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Orders
-                    </th>
+                    </th> */}
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
@@ -220,10 +220,10 @@ const AdminPanel = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.joiningDate}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.orders}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      </td> */}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium items-center">
                         <div className="flex space-x-2">
                           <button 
                             className={`p-1 rounded ${user.status === 'false' ? 'text-red-600 hover:bg-red-100' : 'text-green-600 hover:bg-green-100'}`}
@@ -232,12 +232,12 @@ const AdminPanel = () => {
                           >
                             <Ban className="w-4 h-4" />
                           </button>
-                          <button className="p-1 rounded text-blue-600 hover:bg-blue-100" title="Edit User">
+                          {/* <button className="p-1 rounded text-blue-600 hover:bg-blue-100" title="Edit User">
                             <Edit className="w-4 h-4" />
                           </button>
                           <button className="p-1 rounded text-gray-600 hover:bg-gray-100" title="More Options">
                             <MoreVertical className="w-4 h-4" />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
@@ -304,15 +304,15 @@ const AdminPanel = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Products
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Sales
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    </th> */}
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Rating
-                    </th>
+                    </th> */}
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
@@ -335,46 +335,46 @@ const AdminPanel = () => {
                           seller.block === false ? 'bg-green-100 text-green-800' : 
                           seller.block === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
                         }`}>
-                          {seller.status === false ? 'Active' : seller.status === 'pending' ? 'Pending' : 'Blocked'}
+                          {seller.block === false ? 'Active' : seller.status === true ? 'blocked' : 'Blocked'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {seller.products}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      </td> */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {seller.sales}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      </td> */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <span className="text-sm text-gray-900 mr-1">{seller.rating}</span>
                           <span className="text-yellow-400">★</span>
                         </div>
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <button className="p-1 rounded text-blue-600 hover:bg-blue-100" title="Edit Seller">
+                          {/* <button className="p-1 rounded text-blue-600 hover:bg-blue-100" title="Edit Seller">
                             <Edit className="w-4 h-4" />
-                          </button>
+                          </button> */}
                           <button className="p-1 rounded text-red-600 hover:bg-red-100" title="Block Seller">
                             <Ban onClick={() => toggleBlockUser(seller._id)} className="w-4 h-4" />
                           </button>
-                          <button className="p-1 rounded text-gray-600 hover:bg-gray-100" title="More Options">
+                          {/* <button className="p-1 rounded text-gray-600 hover:bg-gray-100" title="More Options">
                             <MoreVertical className="w-4 h-4" />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {filteredSellers.length === 0 && (
+              {/* {filteredSellers.length === 0 && (
                 <div className="text-center py-8">
                   <p className="text-gray-500">No sellers found matching your search criteria.</p>
                 </div>
-              )}
+              )} */}
               
               {/* Pagination for sellers (similar to users) */}
-              <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+              {/* <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm text-gray-700">
@@ -393,7 +393,7 @@ const AdminPanel = () => {
                     </button>
                   </nav>
                 </div>
-              </div>
+              </div> */}
             </div>
           )}
           

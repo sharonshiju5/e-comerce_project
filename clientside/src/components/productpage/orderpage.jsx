@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Navbar from "../productpage/nav";
 import LoginPrompt from './LoginPrompt';
 import Footer from './footer';
+import {  Link,useNavigate } from "react-router-dom";
 
 const OrderedProducts = () => {
   const [orders, setOrders] = useState([]);
@@ -86,10 +87,12 @@ const OrderedProducts = () => {
             <svg className="w-20 h-20 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <p className="text-gray-600 text-xl mb-6">You haven't placed any orders yet</p>
+            <Link to={"/"}>
+              <p className="text-gray-600 text-xl mb-6">You haven't placed any orders yet</p>
             <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg transition-colors duration-300 shadow-md text-lg font-medium">
               Start Shopping
             </button>
+            </Link>
           </motion.div>
         ) : (
           <div className="space-y-6 overflow-auto h-120">
@@ -122,10 +125,10 @@ const OrderedProducts = () => {
                   </div>
                   
                   <div className="flex items-center space-x-6">
-                    <div className="text-right hidden md:block">
+                    {/* <div className="text-right hidden md:block">
                       <p className="text-sm text-gray-500">Total Amount</p>
                       <p className="font-semibold text-gray-800">${order.totalAmount || '0.00'}</p>
-                    </div>
+                    </div> */}
                     <motion.div 
                       animate={{ 
                         rotate: expandedOrder === order._id ? 180 : 0 

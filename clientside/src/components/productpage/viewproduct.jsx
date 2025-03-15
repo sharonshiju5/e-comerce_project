@@ -17,7 +17,7 @@ const ProductDetail = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const user_id = localStorage.getItem("userId");
-
+  const [sizes,setsize]=useState("")
   const { _id } = useParams();
   
   useEffect(() => {
@@ -67,7 +67,7 @@ const ProductDetail = () => {
       }
       
       console.log("Adding to cart:", _id);
-      const res = await axios.post(APIURL + "/addtocart", { _id, user_id });
+      const res = await axios.post(APIURL + "/addtocart", { _id, user_id ,sizes,quantity});
       console.log("Add to cart response:", res);
       
       if (res.status === 201) {
@@ -91,6 +91,16 @@ const ProductDetail = () => {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data.message || error.message, {
+        position: "top-right",
+        autoClose: 1200,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   }
 
@@ -139,6 +149,7 @@ console.log(data);
   const handlePaymentCancel = () => {
     setShowPaymentOptions(false);
   };
+console.log(sizes);
 
   return (
     <>
@@ -211,7 +222,8 @@ console.log(data);
                   singleprod.sizes.map((size) => (
                     <button
                       key={size}
-                      className="px-4 py-2 border rounded hover:bg-gray-100"
+                      className={`px-4 py-2 border rounded hover:bg-gray-100 ${sizes === size ? "bg-red-500" : "bg-white"}`}
+                      onClick={()=>{setsize(size)}}
                     >
                       {size}
                     </button>
@@ -223,7 +235,7 @@ console.log(data);
             </div>
 
             {/* Quantity selector */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <h3 className="font-semibold mb-2">Quantity:</h3>
               <div className="flex items-center border rounded-md w-32">
                 <button 
@@ -245,13 +257,19 @@ console.log(data);
                   +
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Action buttons */}
             {user_id ? (
               <div className="flex gap-4 items-center mb-6">
                 
                 {cart ? (
+                  sizes===""? 
+                  <button
+                  className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                  >
+                  choose size first
+                  </button>:
                   <button
                     className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
                     onClick={() => addtocart(singleprod._id)}

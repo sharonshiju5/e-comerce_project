@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema({
     sellerId: { type: String, required: true },
     offer:{type:Number},
     block:{type:Boolean},
+    sellerblock:{type:Boolean},
     reviews: [{ user_id: mongoose.Schema.Types.ObjectId, rating: Number, comment: String }],
 
 });

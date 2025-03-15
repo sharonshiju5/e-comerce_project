@@ -115,6 +115,8 @@ const ProductForm = () => {
             console.log("Form reset successfully!");
         }
     } catch (error) {
+      toast.error(error.response?.data.msg,error.response?.data.error || error.message);
+
         console.error("Error saving product:", error.response?.data || error.message);
     }
 };
@@ -123,15 +125,15 @@ const ProductForm = () => {
     <div className="w-full p-8 bg-white">
         <form onSubmit={addProducts}>
       <h2 className="text-xl font-bold text-blue-600">Product Information</h2>
-      <input type="text" name="name" placeholder="Product Name" className="border p-2 rounded w-full mt-2" value={product.name} onChange={handleChange} />
-      <input type="text" name="brand" placeholder="Brand" className="border p-2 rounded w-full mt-2" value={product.brand} onChange={handleChange} />
+      <input type="text" name="name" placeholder="Product Name" className="border p-2 rounded w-full mt-2" required value={product.name} onChange={handleChange} />
+      <input type="text" name="brand" placeholder="Brand" className="border p-2 rounded w-full mt-2" required value={product.brand} onChange={handleChange} />
       <div className="flex flex-col w-full space-y-2">
       {/* Category Dropdown */}
         <select
             name="category"
             className="border p-2 rounded w-full mt-2"
             value={product.category}
-            onChange={handleChange}
+            onChange={handleChange} required
         >
             <option value="">Select Category</option>
             {categories.map((cat, index) => (
@@ -146,6 +148,7 @@ const ProductForm = () => {
             className="border p-2 rounded w-full mt-2 h-32 resize-none"
             value={product.description}
             onChange={handleChange}
+             required
         />
       </div>
 
@@ -153,7 +156,7 @@ const ProductForm = () => {
       <label className="border-2 border-gray-300 border-dashed p-6 w-full flex flex-col items-center justify-center cursor-pointer">
         <Image className="h-10 w-10 text-gray-500" />
         <span className="text-gray-500 mt-2">Browse Or Desktop</span>
-        <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="hidden" />
+        <input type="file" multiple accept="image/*" onChange={handleImageUpload}  className="hidden" />
       </label>
         <div className="grid grid-cols-4 gap-2 mt-2">
           {imagePreviews.map((src, index) => (
@@ -184,7 +187,7 @@ const ProductForm = () => {
             name="size"
             placeholder="Custom Size"
             className="border p-2 rounded w-full"
-            value={customSize}
+            value={customSize} 
             onChange={(e) => setCustomSize(e.target.value)}
         />
         <button type="button" onClick={addCustomSize} className="bg-blue-500 text-white p-2 ml-2 rounded">
@@ -210,8 +213,8 @@ const ProductForm = () => {
       </div>
 
       <h3 className="text-lg font-semibold text-blue-600 mt-6">Pricing & Stock</h3>
-      <input type="number" name="price" placeholder="Price" className="border p-2 rounded w-full mt-2" value={product.price} onChange={handleChange} />
-      <input type="number" name="stock" placeholder="Stock" className="border p-2 rounded w-full mt-2" value={product.stock} onChange={handleChange} />
+      <input type="number" name="price" placeholder="Price" className="border p-2 rounded w-full mt-2" value={product.price} required onChange={handleChange} />
+      <input type="number" name="stock" placeholder="Stock" className="border p-2 rounded w-full mt-2" value={product.stock} required onChange={handleChange} />
 
       <div className="flex justify-between mt-6">
         <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded">Cancel</button>

@@ -115,7 +115,7 @@ export async function logine(req,res){
         }
     
         const token= await sign({userID:user._id},process.env.JWT_KEY,
-          {expiresIn:"1m"})
+          {expiresIn:"24h"})
         //   const userId = await userSchema.findOne({ email },{_id});
         if (user.block===true){
 
@@ -325,7 +325,7 @@ export async function deleteaddress(req,res) {
 export async function addProduct(req, res) {
     try {
 
-        const { userId, name, brand, category, price, stock, sizes, images, material, description,block=false } = req.body;
+        const { userId, name, brand, category, price, stock, sizes, images, material, description,block=false ,sellerblock=false} = req.body;
 
         if (!userId) {
             return res.status(400).send({ msg: "User ID is required" });
@@ -354,6 +354,7 @@ export async function addProduct(req, res) {
             description,
             sellerId,
             block,
+            sellerblock,
         });
 
         console.log("New Product Created:", newProduct); 
@@ -402,10 +403,12 @@ export async function showproduct(req,res) {
         console.log(user_id+"id is");
         
         const sellerId=await userSchema.findById(_id)
+        const block=await userSchema.find({block:false})
+
         if (sellerId) {
             console.log(sellerId+"seller");
             
-            const Data = await productSchema.find({ sellerId: { $ne: sellerId.sellerId },block:false });
+            const Data = await productSchema.find({ sellerId: { $ne: sellerId.sellerId },block:false,sellerblock:false });
             return res.status(200).send({ msg: "Successfully fetched",Data})
         }
         else{
@@ -502,11 +505,13 @@ export async function showsingleproduct(req,res) {
 
 export async function addtocart(req,res) {
     try {
-        const{_id,user_id}=req.body
+        const{_id,user_id,sizes,quantity}=req.body
         console.log(_id,user_id);
      const cart=await cartSchema.create({
             product_id:_id,
-            user_id:user_id
+            user_id:user_id,
+            size:sizes,
+            quantity
         })
         res.status(201).send({ msg: "succesfully added th item to cart" })
     } catch (error) {
@@ -552,12 +557,12 @@ export async function showcart(req,res) {
 
         // Extract product IDs and convert them to ObjectId
         const productIds = cartItems.map(item => new mongoose.Types.ObjectId(item.product_id));
-
+        
         // Fetch product details for all products in the cart
         const products = await productSchema.find({ _id: { $in: productIds } });
 
         console.log("Products in Cart:", products);
-        return res.status(200).json(products);
+        return res.status(200).send({msg:"cart item afetched",products,cartItems});
 
     } catch (error) {
         console.error("Error in showcart:", error);
@@ -606,8 +611,8 @@ export async function filter(req,res) {
 export async function contactadmin(req,res) {
     try {
         const { formState } = req.body;
-console.log(formState);
-const email = formState.email;
+        console.log(formState);
+        const email = formState.email;
 
 // Send confirmation to user
 const userConfirmation = await transporter.sendMail({

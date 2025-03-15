@@ -73,8 +73,15 @@ useEffect(() => {
     try {      
       const user_id = localStorage.getItem("userId");
 
-      const productsRes = await axios.post(APIURL + "/showproduct", {user_id});
-      
+      const productsRes = await axios.post(APIURL + "/showproduct", 
+        { user_id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+            
       if (productsRes.status === 200) { 
         const productsData = productsRes.data.Data || [];
         setProducts(productsData); 
@@ -107,10 +114,10 @@ useEffect(() => {
       {/* Banner */}
       <div className="bg-black text-white rounded-lg overflow-hidden mb-8">
         <div className="relative">
-          <img src="https://static.nike.com/a/images/f_auto/dpr_1.3,cs_srgb/h_1719,c_limit/2f8b228a-5141-4e2c-b846-d6e028faaed3/nike-just-do-it.jpg" alt="Apple Products" className="w-full h-58 object-cover" />
+          <img src="https://static.nike.com/a/images/f_auto/dpr_1.3,cs_srgb/h_1719,c_limit/2f8b228a-5141-4e2c-b846-d6e028faaed3/nike-just-do-it.jpg" alt="Apple Products" className="w-full h-60 object-cover" />
           <div className="absolute top-1/2 left-8 transform -translate-y-1/2">
-            <h2 className="text-2xl font-bold mb-2">Up to 10% off Voucher</h2>
-            <button className="text-sm underline">Shop Now →</button>
+            {/* <h2 className="text-2xl font-bold mb-2">Up to 10% off Voucher</h2> */}
+            {/* <button className="text-sm underline">Shop Now →</button> */}
           </div>
         </div>
       </div>
@@ -119,20 +126,20 @@ useEffect(() => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Flash Sales up to 60% off</h2>
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <div className="bg-gray-100 px-3 py-1 rounded">03</div>
             <div className="bg-gray-100 px-3 py-1 rounded">23</div>
             <div className="bg-gray-100 px-3 py-1 rounded">19</div>
             <div className="bg-gray-100 px-3 py-1 rounded">56</div>
-          </div>
+          </div> */}
         </div>
         <div className="relative w-full">
       {/* Carousel Container */}
       <div className="flex items-center">
         {/* Left Navigation Button */}
-        <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+        {/* <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
           <ChevronLeft size={20} />
-        </button>
+        </button> */}
 
         {/* Scrollable Product List */}
         <div className="flex gap-4 overflow-x-auto custom-scrollbar whitespace-nowrap min-h-65 px-12">
@@ -185,9 +192,9 @@ useEffect(() => {
           ))}
         </div>
         {/* Right Navigation Button */}
-        <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+        {/* <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
           <ChevronRight size={20} />
-        </button>
+        </button> */}
       </div>
     </div>
       </div>
@@ -213,16 +220,18 @@ useEffect(() => {
       <div>
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Best Selling Products in shirts</h2>
-          <button className="text-red-500">View All</button>
+          <h2 className="text-xl font-bold"> shirts</h2>
+          <Link to={"/wishlist/shirts"}>
+            <button className="text-red-500">View All</button>
+          </Link>
         </div>
         <div className="relative w-full">
         {/* Carousel Container */}
       <div className="flex items-center">
         {/* Left Navigation Button */}
-        <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+        {/* <button className="absolute left-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
           <ChevronLeft size={20} />
-        </button>
+        </button> */}
 
         {/* Scrollable Product List */}
         <div className="flex gap-4 overflow-x-auto custom-scrollbar whitespace-nowrap min-h-65 px-12">
@@ -275,9 +284,9 @@ useEffect(() => {
           ))}
         </div>
 
-        <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
+        {/* <button className="absolute right-0 z-10 bg-white p-2 shadow rounded-full hover:bg-gray-200">
           <ChevronRight size={20} />
-        </button>
+        </button> */}
         </div>
       </div>
       </div>
